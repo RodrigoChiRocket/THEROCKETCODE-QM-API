@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.UsuarioDao">
+    <resultMap id="UsuarioResultado" type="com.qualitas.portal.fraudes.account.model.Usuario">
+        <id property="iUsuaID"                  column="I_USUA_ID" />
+        <result property="vEmail"               column="V_EMAIL" />
+        <result property="vNombreCompleto"      column="V_NOMBRE_COMPLETO" />
+        <result property="vContrasena"          column="V_CONTRASENA" />
+        <result property="iRolClav"             column="I_ROL_CLAV" />
+    </resultMap>
+
+    <insert id="crearUsuario" parameterType="com.qualitas.portal.fraudes.account.model.Usuario">
+        INSERT INTO T_USUARIOS(I_USUA_CLAV, V_EMAIL, V_NOMBRE_COMPLETO, V_CONTRASENA, I_SOCIEDAD_CLAV, I_AREA_CLAV, N_APODERADO_LEGAL, V_PUESTO, V_TELEFONO, I_ROL_CLAV)
+        VALUES(#{iUsuaID}, #{vEmail}, #{vNombreCompleto}, #{vContrasena}, #{iSociedadClav}, #{iAreaClav}, #{nApoderadoLegal}, #{vPuesto}, #{vTelefono}, #{iRolClav})
+    </insert>
+
+    <select id="obtenerProximoIDUsuario" resultType="long">
+        SELECT SEQ_USUARIO.NEXTVAL FROM DUAL
+    </select>
+
+    <select id="obtenerUsuario" resultMap="UsuarioResultado">
+        SELECT * FROM "CONVENIOS/admin".T_USUARIOS WHERE I_USUA_ID = #{id}
+    </select>
+
+    <select id="usuariosPresentes" parameterType="String" resultMap="UsuarioResultado">
+        SELECT * FROM "CONVENIOS/admin".T_USUARIOS WHERE V_EMAIL = #{vEmail}
+    </select>
+
+    <select id="validarUsuario" parameterType="String" resultMap="UsuarioResultado">
+        SELECT * FROM "CONVENIOS/admin".T_USUARIOS WHERE V_EMAIL = #{vUsuario}
+    </select>
+
+    <select id="obtenerRolUsuario" resultType="java.lang.String" >
+        SELECT TR.V_NOMBRE FROM "CONVENIOS/admin".T_USUARIOS tu INNER JOIN "CONVENIOS/admin".T_ROLES tr ON TR.I_ROLE_ID = TU.I_ROL_CLAV WHERE TU.I_USUA_ID = #{id}
+    </select>
+
+    <select id="obtenerRolID" parameterType="java.lang.String" resultType="long">
+        SELECT TR.I_ROLE_ID FROM "CONVENIOS/admin".T_ROLES tr WHERE V_NOMBRE = #{rol}
+    </select>
+
+    <select id="obtenerUsuarioPorRol" parameterType="long" resultType="java.lang.String">
+        SELECT
+        JSON_OBJECT(
+        'iUsuaID' VALUE TU.I_USUA_ID,
+        'vNombre' VALUE TU.V_NOMBRE,
+        'vNombreRol' VALUE TR.V_NOMBRE,
+        'iRoleID' VALUE TR.I_ROLE_ID
+        )
+        FROM "CONVENIOS/admin".T_USUARIOS tu
+        INNER JOIN T_ROLES tr ON TR.I_ROL_ID = TU.I_ROL_CLAV
+        WHERE TU.I_ROL_CLAV = #{rol}
+    </select>
+
+    
+    <delete id="eliminarUsuario">
+        DELETE FROM T_USUARIOS WHERE I_USUA_CLAV = #{id}
+    </delete>
+
+    <select id="obtenerUsuarioPorId" parameterType="long" resultType="String">
+        SELECT US.v_nombre
+        FROM "CONVENIOS/admin".T_USUARIOS US
+        WHERE us.I_USUA_ID = #{id}
+    </select>
+</mapper>
