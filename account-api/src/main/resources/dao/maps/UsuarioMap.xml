@@ -8,11 +8,16 @@
         <result property="vNombreCompleto"      column="V_NOMBRE_COMPLETO" />
         <result property="vContrasena"          column="V_CONTRASENA" />
         <result property="iRolClav"             column="I_ROL_CLAV" />
+        <result property="vCelular"             column="V_CELULAR" />
     </resultMap>
 
     <insert id="crearUsuario" parameterType="com.qualitas.portal.fraudes.account.model.Usuario">
-        INSERT INTO T_USUARIOS(I_USUA_CLAV, V_EMAIL, V_NOMBRE_COMPLETO, V_CONTRASENA, I_SOCIEDAD_CLAV, I_AREA_CLAV, N_APODERADO_LEGAL, V_PUESTO, V_TELEFONO, I_ROL_CLAV)
-        VALUES(#{iUsuaID}, #{vEmail}, #{vNombreCompleto}, #{vContrasena}, #{iSociedadClav}, #{iAreaClav}, #{nApoderadoLegal}, #{vPuesto}, #{vTelefono}, #{iRolClav})
+        INSERT INTO "CONVENIOS/admin".T_USUARIOS(I_ROL_CLAV, V_NOMBRE_COMPLETO, V_CONTRASENA, V_EMAIL, V_CELULAR)
+        VALUES(#{iRolClav}, #{vNombreCompleto}, #{vContrasena}, #{vEmail}, #{vCelular})
+
+        <selectKey resultType="BigDecimal" order="AFTER" keyProperty="iUsuaID">
+            SELECT "CONVENIOS/admin".SEQ_T_USUARIOS.CURRVAL FROM DUAL
+        </selectKey>
     </insert>
 
     <select id="obtenerProximoIDUsuario" resultType="long">
