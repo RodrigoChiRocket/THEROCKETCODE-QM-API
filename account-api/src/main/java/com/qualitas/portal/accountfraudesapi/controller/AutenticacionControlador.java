@@ -35,33 +35,7 @@ public class AutenticacionControlador {
 
     @PostMapping("/registrar")
     public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
-        // Verificar si el usuario con el email ya existe
-        if (autenticacionService.existeUsuarioenDB(usuario.getvEmail())) {
-            return Response.crearRespuesta()
-                    .codigoRespuesta(HttpStatus.CONFLICT)
-                    .agregarAtributo("Ya existe un usuario con este email: ", usuario.getvEmail())
-                    .crear();
-        }
 
-        String email = usuario.getvEmail();
-        String nombre = usuario.getvNombreCompleto();
-        String contraseña = usuario.getvContrasena();
-
-        // Registrar el log de los datos
-        logger.info("Los datos son: Email - {}, Nombre - {}, Contraseña - {}", email, nombre, contraseña);
-
-        // Enviar el correo con los datos del usuario registrado
-        boolean correoEnviado = enviarCorreo.enviarCorreo(
-                email,  // Correo del usuario
-                nombre,  // Nombre del usuario
-                contraseña  // Contraseña del usuario (deberías encriptarla si es necesario)
-        );
-
-        if (correoEnviado) {
-            logger.info("Correo enviado exitosamente a: {}", email);
-        } else {
-            logger.error("Error al enviar el correo a: {}", email);
-        }
 
         // Si no existe, registrar el usuario
         BigDecimal iUsuaID = autenticacionService.registrarUsuario(usuario);
@@ -72,6 +46,9 @@ public class AutenticacionControlador {
                 .crear();
     }
 
+
+
+    //Prueba de envio de correo
     @PostMapping("/enviarCorreoTest")
     public ResponseEntity<String> enviarCorreoTest(
             @RequestParam("email") String email,
