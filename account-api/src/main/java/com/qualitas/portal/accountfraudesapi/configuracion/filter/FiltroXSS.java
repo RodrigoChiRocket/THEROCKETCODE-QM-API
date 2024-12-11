@@ -1,6 +1,7 @@
 package com.qualitas.portal.accountfraudesapi.configuracion.filter;
 
 import com.qualitas.portal.accountfraudesapi.configuracion.wrapper.XSSRequestWrapper;
+import com.qualitas.portal.fraudes.account.util.exception.XSSFilterException;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.*;
@@ -25,10 +26,8 @@ public class FiltroXSS implements Filter {
 
         try{
             filterChain.doFilter(wrapperRequest, servletResponse);
-        }catch (Exception ignore){
-            httpResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-            httpResponse.setContentType("application/json");
-            httpResponse.getWriter().write("{\"msg\": \"Solicitud corrupta o invalida\"}");
+        } catch (Exception e) {
+            throw new XSSFilterException("Solicitud corrupta o invalida", e);
         }
     }
 
