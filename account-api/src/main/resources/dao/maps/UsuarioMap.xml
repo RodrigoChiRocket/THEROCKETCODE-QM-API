@@ -20,6 +20,8 @@
         </selectKey>
     </insert>
 
+
+
     <select id="obtenerProximoIDUsuario" resultType="long">
         SELECT SEQ_USUARIO.NEXTVAL FROM DUAL
     </select>
@@ -28,6 +30,7 @@
         SELECT * FROM "CONVENIOS/admin".T_USUARIOS WHERE I_USUA_ID = #{id}
     </select>
 
+<!--Verificar si existe el usuario-->
     <select id="usuariosPresentes" parameterType="String" resultMap="UsuarioResultado">
         SELECT * FROM "CONVENIOS/admin".T_USUARIOS WHERE V_EMAIL = #{vEmail}
     </select>
