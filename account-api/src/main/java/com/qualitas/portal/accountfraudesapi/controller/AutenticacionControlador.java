@@ -33,40 +33,5 @@ public class AutenticacionControlador {
         return ResponseEntity.ok(inicioSesionRespuestaDto);
     }
 
-    @PostMapping("/registrar")
-    public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
 
-
-        // Si no existe, registrar el usuario
-        BigDecimal iUsuaID = autenticacionService.registrarUsuario(usuario);
-
-        return Response.crearRespuesta()
-                .codigoRespuesta(HttpStatus.CREATED)
-                .agregarAtributo("iUsuaID", iUsuaID)
-                .crear();
-    }
-
-
-
-    //Prueba de envio de correo
-    @PostMapping("/enviarCorreoTest")
-    public ResponseEntity<String> enviarCorreoTest(
-            @RequestParam("email") String email,
-            @RequestParam("nombre") String nombre,
-            @RequestParam("contraseña") String contraseña) {
-
-        logger.info("Enviando correo a: {}", email);
-
-        // Enviar correo
-        boolean result = enviarCorreo.enviarCorreo(email, nombre, contraseña);
-
-        if (result) {
-            logger.info("Correo enviado exitosamente a: {}", email);
-            return ResponseEntity.ok("Correo enviado exitosamente.");
-        } else {
-            logger.error("Error al enviar el correo a: {}", email);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al enviar el correo.");
-        }
-    }
 }
