@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.CoberturaDao">
+
+    <!-- Insertar una nueva cobertura -->
+    <insert id="crearCobertura" useGeneratedKeys="true" keyProperty="iCobertID">
+        INSERT INTO T_COBERTURAS
+        (V_NOMBRE, D_SUMA_ASEGURADORA, D_DEDUCIBLE, D_IMPORTE_DEDUCIBLE, I_SINIESTRO_ID)
+        VALUES (#{vNombre}, #{dSumAseguradora}, #{dDeducible}, #{dImportDeducible}, #{iSiniestroID})
+    </insert>
+
+    <!-- Obtener una cobertura por ID -->
+    <select id="obtenerCobertura" resultMap="CoberturaResultado">
+        SELECT * FROM T_COBERTURAS WHERE I_COBERT_ID = #{id}
+    </select>
+
+    <!-- Actualizar una cobertura -->
+    <update id="actualizarCobertura" parameterType="com.qualitas.portal.fraudes.account.model.Cobertura">
+        UPDATE T_COBERTURAS
+        SET V_NOMBRE = #{vNombre}, D_SUMA_ASEGURADORA = #{dSumAseguradora},
+            D_DEDUCIBLE = #{dDeducible}, D_IMPORTE_DEDUCIBLE = #{dImportDeducible},
+            I_SINIESTRO_ID = #{iSiniestroID}
+        WHERE I_COBERT_ID = #{iCobertID}
+    </update>
+
+    <!-- Eliminar una cobertura -->
+    <delete id="eliminarCobertura">
+        DELETE FROM T_COBERTURAS WHERE I_COBERT_ID = #{id}
+    </delete>
+
+    <!-- Listar todas las coberturas -->
+    <select id="listarCobertura" resultMap="CoberturaResultado">
+        SELECT * FROM T_COBERTURAS
+    </select>
+
+    <!-- Comprobar si una cobertura existe -->
+    <select id="existeCobertura" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM T_COBERTURAS WHERE I_COBERT_ID = #{id}
+    </select>
+
+    <!-- Mapear la entidad Cobertura -->
+    <resultMap id="CoberturaResultado" type="com.qualitas.portal.fraudes.account.model.Cobertura">
+        <id property="iCobertID" column="I_COBERT_ID"/>
+        <result property="vNombre" column="V_NOMBRE"/>
+        <result property="dSumAseguradora" column="D_SUMA_ASEGURADORA"/>
+        <result property="dDeducible" column="D_DEDUCIBLE"/>
+        <result property="dImportDeducible" column="D_IMPORTE_DEDUCIBLE"/>
+        <result property="iSiniestroID" column="I_SINIESTRO_ID"/>
+    </resultMap>
+
+</mapper>

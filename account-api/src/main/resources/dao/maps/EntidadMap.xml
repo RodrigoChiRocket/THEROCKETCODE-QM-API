@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.EntidadDao">
+
+    <!-- Insertar entidad y devolver el ID generado -->
+    <insert id="crearEntidad" useGeneratedKeys="true" keyProperty="iEntidaId" parameterType="com.qualitas.portal.fraudes.account.model.Entidad">
+        INSERT INTO T_ENTIDADES (V_ENTIDAD)
+        VALUES (#{vEntidad})
+    </insert>
+
+    <!-- Obtener entidad por ID -->
+    <select id="obtenerEntidad" resultMap="EntidadResultado">
+        SELECT * FROM T_ENTIDADES WHERE I_ENTIDA_ID = #{id}
+    </select>
+
+    <!-- Actualizar entidad -->
+    <update id="actualizarEntidad" parameterType="com.qualitas.portal.fraudes.account.model.Entidad">
+        UPDATE T_ENTIDADES
+        SET V_ENTIDAD = #{vEntidad}
+        WHERE I_ENTIDA_ID = #{iEntidaId}
+    </update>
+
+    <!-- ResultMap -->
+    <resultMap id="EntidadResultado" type="com.qualitas.portal.fraudes.account.model.Entidad">
+        <id property="iEntidaId" column="I_ENTIDA_ID"/>
+        <result property="vEntidad" column="V_ENTIDAD"/>
+    </resultMap>
+
+    <!-- Listar todas las entidades -->
+    <select id="listarEntidades" resultMap="EntidadResultado">
+        SELECT * FROM T_ENTIDADES
+    </select>
+
+    <!-- Eliminar entidad -->
+    <delete id="eliminarEntidad">
+        DELETE FROM T_ENTIDADES
+        WHERE I_ENTIDA_ID = #{id}
+    </delete>
+
+</mapper>

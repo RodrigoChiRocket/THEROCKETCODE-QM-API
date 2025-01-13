@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.ValuacionesDao" >
+   
+    <insert id="crearValuaciones" useGeneratedKeys="true" keyProperty="iValuacID">
+        INSERT INTO T_VALUACIONES
+        (I_EXPEDIENTE_ID, I_CODIGO_AFECTADO, V_TIPO_RIESGO, I_CONDUCTOR_ID, V_VEHICULO, V_MODELO, V_PLACAS, V_SERIE, D_FECHA_VALUACION, V_ESTATUS_VALUACION, I_SINIESTRO_ID)
+        VALUES (#{iExpedienteID}, #{iCodigoAfectado}, #{vTipoRiesgo}, #{iConductorID}, #{vVehiculo}, #{vModelo}, #{vPlacas}, #{vSerie}, #{dFechaValuacion}, #{vEstatusValuacion}, #{iSiniestroID})
+    </insert>
+    
+    <select id="obtenerValuaciones" resultMap="ValuacionesResultado">
+        SELECT * FROM T_VALUACIONES
+        WHERE I_VALUAC_ID = #{id}
+    </select>
+    
+    <delete id="eliminarValuaciones">
+        DELETE FROM T_VALUACIONES
+        WHERE I_VALUAC_ID = #{id}
+    </delete>
+    
+    <select id="listarValuaciones" resultMap="ValuacionesResultado">
+        SELECT * FROM T_VALUACIONES
+    </select>
+
+    <resultMap id="ValuacionesResultado" type="com.qualitas.portal.fraudes.account.model.Valuaciones">
+        <id property="iValuacID" column="I_VALUAC_ID"/>
+        <result property="iExpedienteID" column="I_EXPEDIENTE_ID"/>
+        <result property="iCodigoAfectado" column="I_CODIGO_AFECTADO"/>
+        <result property="vTipoRiesgo" column="V_TIPO_RIESGO"/>
+        <result property="iConductorID" column="I_CONDUCTOR_ID"/>
+        <result property="vVehiculo" column="V_VEHICULO"/>
+        <result property="vModelo" column="V_MODELO"/>
+        <result property="vPlacas" column="V_PLACAS"/>
+        <result property="vSerie" column="V_SERIE"/>
+        <result property="dFechaValuacion" column="D_FECHA_VALUACION"/>
+        <result property="vEstatusValuacion" column="V_ESTATUS_VALUACION"/>
+        <result property="iSiniestroID" column="SINIESTRO_ID"/>
+    </resultMap>
+
+</mapper>

@@ -5,6 +5,8 @@ import com.qualitas.portal.fraudes.account.dto.request.CredencialesDto;
 import com.qualitas.portal.fraudes.account.dto.response.InicioSesionRespuestaDto;
 import com.qualitas.portal.fraudes.account.model.Usuario;
 import com.qualitas.portal.fraudes.account.service.AutenticacionService;
+import com.qualitas.portal.fraudes.account.service.CodigoEmailService;
+import com.qualitas.portal.fraudes.account.service.RestablecerContrasenaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,12 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/auth")
 public class AutenticacionControlador {
+
+    @Autowired
+    private RestablecerContrasenaService restablecerContrasenaService;
+
+    @Autowired
+    private CodigoEmailService codigoEmailService;
 
     @Autowired
     AutenticacionService autenticacionService;
@@ -33,6 +41,34 @@ public class AutenticacionControlador {
                 .codigoRespuesta(HttpStatus.CREATED)
                 .agregarAtributo("iUsuaID", iUsuaID)
                 .crear();
+    }
+
+
+
+
+
+
+    // Endpoint para solicitar el restablecimiento de contraseña (genera y envía el código)
+    @PostMapping("/solicitar")
+    public ResponseEntity<String> solicitarRestablecimiento(@RequestParam String email) {
+        codigoEmailService.generarCodigoParaRestablecimiento(email);
+        return ResponseEntity.ok("Código de restablecimiento enviado al correo.");
+    }
+
+
+    @PostMapping("/restablecer")
+    public ResponseEntity<String> restablecerContrasena(@RequestParam String email,
+                                                        @RequestParam String nuevaContrasena,
+                                                        @RequestParam String codigo) {
+
+        boolean esValido = codigoEmailService.verificarCodigoRestablecimiento(email, codigo);
+        try {
+            // Llama al servicio para restablecer la contraseña
+            restablecerContrasenaService.restablecerContrasena(email, nuevaContrasena, codigo);
+            return ResponseEntity.ok("Contraseña actualizada correctamente.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
 }

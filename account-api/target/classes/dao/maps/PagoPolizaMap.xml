@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.PagoPolizaDAO">
+
+    <!-- Insertar PagoPoliza -->
+    <insert id="crearPago" useGeneratedKeys="true" keyProperty="iPagoPolizaId">
+        INSERT INTO T_PAGOS_POLIZA
+        (V_ENDOSO, D_FECHA_VENCIMIENTO, D_IMPORTE, D_RECIBIDO, D_REMESA, D_FECHA_PAGO, V_ESTATUS, V_TIPO_MOV, I_SINIESTRO_ID)
+        VALUES
+            (#{vEndoso}, #{dFechaVencimiento}, #{dImporte}, #{dRecibido}, #{vRemesa}, #{dFechaPago}, #{vEstatus}, #{vTipoMov}, #{iSiniestroId})
+    </insert>
+
+
+    <!-- Actualizar PagoPoliza -->
+    <update id="actualizarPago" parameterType="com.qualitas.portal.fraudes.account.model.PagoPoliza">
+        UPDATE T_PAGOS_POLIZA
+        SET V_ENDOSO = #{vEndoso},
+            D_FECHA_VENCIMIENTO = #{dFechaVencimiento},
+            D_IMPORTE = #{dImporte},
+            D_RECIBIDO = #{dRecibido},
+            D_REMESA = #{vRemesa},
+            D_FECHA_PAGO = #{dFechaPago},
+            V_ESTATUS = #{vEstatus},
+            V_TIPO_MOV = #{vTipoMov},
+            I_SINIESTRO_ID = #{iSiniestroId}
+        WHERE I_P_POLIZA_ID = #{iPagoPolizaId}
+    </update>
+
+    <!-- Seleccionar un PagoPoliza -->
+    <select id="obtenerPagoPorId" resultMap="PagoPolizaResultado">
+        SELECT * FROM T_PAGOS_POLIZA WHERE I_P_POLIZA_ID = #{id}
+    </select>
+
+    <!-- Mapeo de resultado de PagoPoliza -->
+    <resultMap id="PagoPolizaResultado" type="com.qualitas.portal.fraudes.account.model.PagoPoliza">
+        <id property="iPagoPolizaId" column="I_P_POLIZA_ID" />
+        <result property="vEndoso" column="V_ENDOSO" />
+        <result property="dFechaVencimiento" column="D_FECHA_VENCIMIENTO" />
+        <result property="dImporte" column="D_IMPORTE" />
+        <result property="dRecibido" column="D_RECIBIDO" />
+        <result property="vRemesa" column="D_REMESA" />
+        <result property="dFechaPago" column="D_FECHA_PAGO" />
+        <result property="vEstatus" column="V_ESTATUS" />
+        <result property="vTipoMov" column="V_TIPO_MOV" />
+        <result property="iSiniestroId" column="I_SINIESTRO_ID" />
+    </resultMap>
+
+    <!-- Seleccionar todos los PagosPoliza -->
+    <select id="listarPagos" resultMap="PagoPolizaResultado">
+        SELECT * FROM T_PAGOS_POLIZA
+    </select>
+
+    <!-- Eliminar PagoPoliza por ID -->
+    <delete id="eliminarPago">
+        DELETE FROM T_PAGOS_POLIZA
+        WHERE I_P_POLIZA_ID = #{id}
+    </delete>
+
+    <!-- Verificar si existe PagoPoliza por ID -->
+    <select id="existePagoPorId" resultType="boolean" parameterType="java.math.BigDecimal">
+        SELECT COUNT(*) > 0
+        FROM T_PAGOS_POLIZA
+        WHERE I_P_POLIZA_ID = #{id}
+    </select>
+
+</mapper>

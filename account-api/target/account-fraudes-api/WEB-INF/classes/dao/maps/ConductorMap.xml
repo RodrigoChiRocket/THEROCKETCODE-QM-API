@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.ConductorDao">
+
+    <!-- Insertar conductor -->
+    <insert id="crearConductor" useGeneratedKeys="true" keyProperty="iConducId">
+        INSERT INTO T_CONDUCTORES (V_NOMBRES, V_APELLIDOS, V_POLIZA)
+        VALUES (#{vNombres}, #{vApellidos}, #{vPoliza})
+    </insert>
+
+    <!-- Actualizar conductor -->
+    <update id="actualizarConductor" parameterType="com.qualitas.portal.fraudes.account.model.Conductor">
+        UPDATE T_CONDUCTORES
+        SET V_NOMBRES = #{vNombres}, V_APELLIDOS = #{vApellidos}, V_POLIZA = #{vPoliza}
+        WHERE I_CONDUC_ID = #{iConducId}
+    </update>
+
+    <!-- Obtener conductor -->
+    <select id="obtenerConductor" resultMap="ConductorResultado">
+        SELECT * FROM T_CONDUCTORES WHERE I_CONDUC_ID = #{id}
+    </select>
+
+    <!-- Result map para conductor -->
+    <resultMap id="ConductorResultado" type="com.qualitas.portal.fraudes.account.model.Conductor">
+        <id property="iConducId" column="I_CONDUC_ID"/>
+        <result property="vNombres" column="V_NOMBRES"/>
+        <result property="vApellidos" column="V_APELLIDOS"/>
+        <result property="vPoliza" column="V_POLIZA"/>
+    </resultMap>
+
+    <!-- Listar todos los conductores -->
+    <select id="listarConductores" resultMap="ConductorResultado">
+        SELECT * FROM T_CONDUCTORES
+    </select>
+
+    <!-- Eliminar conductor -->
+    <delete id="eliminarConductor">
+        DELETE FROM T_CONDUCTORES
+        WHERE I_CONDUC_ID = #{id}
+    </delete>
+
+    <!-- Verificar si el conductor existe por ID -->
+    <select id="existeConductor" resultType="boolean" parameterType="java.math.BigDecimal">
+        SELECT COUNT(*) > 0
+        FROM T_CONDUCTORES
+        WHERE I_CONDUC_ID = #{id}
+    </select>
+
+</mapper>

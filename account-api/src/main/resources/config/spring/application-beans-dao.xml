@@ -9,28 +9,26 @@
 	   xmlns:cache="http://www.springframework.org/schema/cache"
 	   xmlns:p="http://www.springframework.org/schema/p"
 	   xsi:schemaLocation="
-	     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
-	     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-	     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd
-	     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
-	     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
-	     http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
-	     http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.2.xsd"
+         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+         http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd
+         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+         http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.2.xsd"
 	   default-autowire="byName">
 
-	<!-- JNDI descomentar solo en branch qa-environment -->
-	<!-- <jee:jndi-lookup id="dataSourceORA" jndi-name="JNDICLMCORP"/> -->
-
-	<!-- DataSource de la DB descomentar en branch development -->
-	<bean id="dataSourceORA" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="${jdbc.driverClassName.ora}" />
-		<property name="url" value="${jdbc.ag_prod.url.ora}" />
-		<property name="username" value="${jdbc.username.ora}" />
-		<property name="password" value="${jdbc.password.ora}" />
+	<!-- Bean para el DataSource de MySQL -->
+	<bean id="dataSourceMySQL" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/qualitas_fraudes" />
+		<property name="username" value="root" />
+		<property name="password" value="Blacky20." />
 	</bean>
 
-<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSourceORA" />
+	<!-- Configuración de MyBatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceMySQL" />
 		<property name="mapperLocations">
 			<list>
 				<value>classpath:dao/maps/*.xml</value>
@@ -50,28 +48,30 @@
 
 	<context:component-scan base-package="com.qualitas.portal" />
 
-
+	<!-- Dao de Usuario -->
 	<bean id="usuarioDao" class="com.qualitas.portal.fraudes.account.dao.impl.UsuarioDaoImpl">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
-
+	<!-- Configuración de transacciones -->
 	<bean id="dataTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSourceORA" />
+		<property name="dataSource" ref="dataSourceMySQL" />
 	</bean>
 
+	<!-- Bean para manejo de excepciones -->
 	<bean id="exceptionBuilder"
-		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		  class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="staticMethod">
 			<value>com.certum.commons.lang.ExceptionBuilder.getInstance</value>
 		</property>
 	</bean>
 
 	<bean id="exceptionBuilderInitializer"
-		class="com.certum.commons.lang.ExceptionBuilderInitializerBean">
+		  class="com.certum.commons.lang.ExceptionBuilderInitializerBean">
 		<property name="messageFactoryClass"
-			value="com.certum.commons.lang.resources.DiscoverMessageResourcesFactory" />
+				  value="com.certum.commons.lang.resources.DiscoverMessageResourcesFactory" />
 		<property name="resourceFile"
-			value="config/application-exceptions" />
+				  value="config/application-exceptions" />
 	</bean>
+
 </beans>

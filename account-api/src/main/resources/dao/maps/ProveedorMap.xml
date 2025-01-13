@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.ProveedorDao">
+
+    <insert id="crearProveedor" useGeneratedKeys="true" keyProperty="iProveeID">
+        INSERT INTO T_PROVEEDORES (V_NOMBRE)
+        VALUES (#{vNombre})
+    </insert>
+
+    <update id="actualizarProveedor" parameterType="com.qualitas.portal.fraudes.account.model.Proveedor">
+        UPDATE T_PROVEEDORES
+        SET V_NOMBRE = #{vNombre}
+        WHERE I_PROVEE_ID = #{iProveeID}
+    </update>
+
+    <select id="obtenerProveedor" resultMap="ProveedorResultado">
+        SELECT * FROM T_PROVEEDORES WHERE I_PROVEE_ID = #{id}
+    </select>
+
+    <resultMap id="ProveedorResultado" type="com.qualitas.portal.fraudes.account.model.Proveedor">
+        <id property="iProveeID" column="I_PROVEE_ID"/>
+        <result property="vNombre" column="V_NOMBRE"/>
+    </resultMap>
+
+    <select id="listarProveedores" resultMap="ProveedorResultado">
+        SELECT * FROM T_PROVEEDORES
+    </select>
+
+    <!-- Eliminar proveedor por ID -->
+    <delete id="eliminarProveedor">
+        DELETE FROM T_PROVEEDORES
+        WHERE I_PROVEE_ID = #{id}
+    </delete>
+
+    <select id="existeProveedor" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM T_PROVEEDORES
+        WHERE V_NOMBRE = #{nombre}
+    </select>
+
+    <select id="existeProveedorId" resultType="boolean" parameterType="java.math.BigDecimal">
+        SELECT COUNT(*) > 0
+        FROM T_PROVEEDORES
+        WHERE I_PROVEE_ID = #{id}
+    </select>
+
+</mapper>

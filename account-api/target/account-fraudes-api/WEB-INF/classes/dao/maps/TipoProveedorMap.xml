@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.TipoProveedorDao">
+
+    <!-- Insertar un nuevo Tipo Proveedor -->
+    <insert id="crearTipoProveedor" useGeneratedKeys="true" keyProperty="iTProveeId">
+        INSERT INTO T_TIPO_PROVEEDOR (V_TIPO_PROVEEDOR)
+        VALUES (#{vTipoProveedor})
+    </insert>
+
+    <!-- Actualizar un Tipo Proveedor existente -->
+    <update id="actualizarTipoProveedor" parameterType="com.qualitas.portal.fraudes.account.model.TipoProveedor">
+        UPDATE T_TIPO_PROVEEDOR
+        SET V_TIPO_PROVEEDOR = #{vTipoProveedor}
+        WHERE I_T_PROVEE_ID = #{iTProveeId}
+    </update>
+
+    <!-- Obtener un Tipo Proveedor por ID -->
+    <select id="obtenerTipoProveedor" resultMap="TipoProveedorResultado">
+        SELECT * FROM T_TIPO_PROVEEDOR WHERE I_T_PROVEE_ID = #{iTProveeId}
+    </select>
+
+    <resultMap id="TipoProveedorResultado" type="com.qualitas.portal.fraudes.account.model.TipoProveedor">
+        <id property="iTProveeId" column="I_T_PROVEE_ID"/>
+        <result property="vTipoProveedor" column="V_TIPO_PROVEEDOR"/>
+    </resultMap>
+
+    <!-- Listar todos los Tipos Proveedor -->
+    <select id="listarTiposProveedor" resultMap="TipoProveedorResultado">
+        SELECT * FROM T_TIPO_PROVEEDOR
+    </select>
+
+    <!-- Eliminar un Tipo Proveedor por ID -->
+    <delete id="eliminarTipoProveedor">
+        DELETE FROM T_TIPO_PROVEEDOR
+        WHERE I_T_PROVEE_ID = #{iTProveeId}
+    </delete>
+
+</mapper>

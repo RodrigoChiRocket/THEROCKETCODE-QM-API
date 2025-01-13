@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.SiniestroDao">
+    <!-- ResultMap para mapear la entidad Siniestro -->
+    <resultMap id="SiniestroResultMap" type="com.qualitas.portal.fraudes.account.model.Siniestro">
+        <id property="iSiniesID" column="I_SINIES_ID" jdbcType="BIGINT"/>
+        <result property="iScore" column="I_SCORE" jdbcType="INTEGER"/>
+        <result property="vSiniestroRelacion" column="V_SINIESTRO_RELACION" jdbcType="VARCHAR"/>
+        <result property="iAnalistaID" column="I_ANALISTA_ID" jdbcType="BIGINT"/>
+        <result property="iProveedorID" column="I_PROVEEDOR_ID" jdbcType="BIGINT"/>
+        <result property="dFechaAsigAnalista" column="D_FECHA_ASIG_ANALISTA" jdbcType="DATE"/>
+        <result property="dFechaAsigProveedor" column="D_FECHA_ASIG_PROVEEDOR" jdbcType="DATE"/>
+        <result property="vEtiquetaSise" column="V_ETIQUETA_SISE" jdbcType="VARCHAR"/>
+        <result property="vEstatusPlat" column="V_ESTATUS_PLAT" jdbcType="VARCHAR"/>
+        <result property="iMarcaID" column="I_MARCA_ID" jdbcType="BIGINT"/>
+        <result property="dFechaReporte" column="D_FECHA_REPORTE" jdbcType="DATE"/>
+        <result property="dFechaOcurrido" column="D_FECHA_OCURRIDO" jdbcType="DATE"/>
+        <result property="vClaveGerente" column="V_CLAVE_GERENTE" jdbcType="VARCHAR"/>
+        <result property="iTiempoRevision" column="I_TIEMPO_REVISION" jdbcType="INTEGER"/>
+        <result property="iTiempoAsignacion" column="I_TIEMPO_ASIGNACION" jdbcType="INTEGER"/>
+        <result property="iCausaID" column="I_CAUSA_ID" jdbcType="BIGINT"/>
+        <result property="iEntidadID" column="I_ENTIDA_ID" jdbcType="BIGINT"/>
+        <result property="iConductorID" column="I_CONDUC_ID" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <select id="existeSiniestro" parameterType="int" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM T_SINIESTROS WHERE I_SINIES_ID = #{iSiniesID}
+    </select>
+
+    <!-- Insertar un nuevo Siniestro -->
+    <insert id="insertSiniestro" parameterType="com.qualitas.portal.fraudes.account.model.Siniestro">
+        INSERT INTO T_SINIESTROS (
+            I_SCORE, V_SINIESTRO_RELACION, I_ANALISTA_ID, I_PROVEEDOR_ID,
+            D_FECHA_ASIG_ANALISTA, D_FECHA_ASIG_PROVEEDOR, V_ETIQUETA_SISE, V_ESTATUS_PLAT, I_MARCA_ID,
+            D_FECHA_REPORTE, D_FECHA_OCURRIDO, V_CLAVE_GERENTE,
+            I_TIEMPO_REVISION, I_TIEMPO_ASIGNACION, I_CAUSA_ID, I_ENTIDA_ID, I_CONDUC_ID
+        ) VALUES (
+                     #{iScore}, #{vSiniestroRelacion}, #{iAnalistaID}, #{iProveedorID},
+                     #{dFechaAsigAnalista}, #{dFechaAsigProveedor}, #{vEtiquetaSise}, #{vEstatusPlat}, #{iMarcaID},
+                     #{dFechaReporte}, #{dFechaOcurrido}, #{vClaveGerente},
+                     #{iTiempoRevision}, #{iTiempoAsignacion}, #{iCausaID}, #{iEntidadID}, #{iConductorID}
+                 )
+    </insert>
+
+    <!-- Actualizar un Siniestro existente -->
+    <update id="updateSiniestro" parameterType="com.qualitas.portal.fraudes.account.model.Siniestro">
+        UPDATE T_SINIESTROS
+        SET
+            I_SCORE = #{iScore},
+            V_SINIESTRO_RELACION = #{vSiniestroRelacion},
+            I_ANALISTA_ID = #{iAnalistaID},
+            I_PROVEEDOR_ID = #{iProveedorID},
+            D_FECHA_ASIG_ANALISTA = #{dFechaAsigAnalista},
+            D_FECHA_ASIG_PROVEEDOR = #{dFechaAsigProveedor},
+            V_ETIQUETA_SISE = #{vEtiquetaSise},
+            V_ESTATUS_PLAT = #{vEstatusPlat},
+            I_MARCA_ID = #{iMarcaID},
+            D_FECHA_REPORTE = #{dFechaReporte},
+            D_FECHA_OCURRIDO = #{dFechaOcurrido},
+            V_CLAVE_GERENTE = #{vClaveGerente},
+            I_TIEMPO_REVISION = #{iTiempoRevision},
+            I_TIEMPO_ASIGNACION = #{iTiempoAsignacion},
+            I_CAUSA_ID = #{iCausaID},
+            I_ENTIDA_ID = #{iEntidadID},
+            I_CONDUC_ID = #{iConductorID}
+        WHERE I_SINIES_ID = #{iSiniesID}
+    </update>
+
+    <!-- Eliminar un Siniestro -->
+    <delete id="deleteSiniestro" parameterType="BigDecimal">
+        DELETE FROM T_SINIESTROS WHERE I_SINIES_ID = #{iSiniesID}
+    </delete>
+
+    <!-- Obtener un Siniestro por ID -->
+    <select id="selectSiniestro" resultMap="SiniestroResultMap" parameterType="BigDecimal">
+        SELECT * FROM T_SINIESTROS WHERE I_SINIES_ID = #{iSiniesID}
+    </select>
+
+    <!-- Obtener todos los Siniestros -->
+    <select id="selectAllSiniestros" resultMap="SiniestroResultMap">
+        SELECT * FROM T_SINIESTROS
+    </select>
+
+    <!-- Consulta personalizada para obtener el siniestro con información relacionada -->
+    <select id="selectSiniestroConDetalles" resultType="com.qualitas.portal.fraudes.account.dto.response.SinestroResponse">
+        <![CDATA[
+        SELECT
+            a.V_NOMBRE AS analistaNombre,
+            v.V_SERIE AS valuacionSerie,
+            v.V_TIPO_RIESGO AS valuacionTipoRiesgo,
+            v.V_PLACAS AS valuacionPlacas,
+            v.V_MODELO AS valuacionModelo,
+            v.D_FECHA_VALUACION AS valuacionFecha,
+            c.V_NOMBRES AS conductorNombres,
+            c.V_APELLIDOS AS conductorApellidos,
+            c.V_POLIZA AS conductorPoliza,
+            p.V_ENDOSO AS pagosEndoso,
+            p.D_FECHA_PAGO AS pagosFechaPago
+        FROM
+            T_SINIESTROS s
+                LEFT JOIN T_ANALISTAS a ON s.I_ANALISTA_ID = a.I_ANALIS_ID
+                LEFT JOIN T_VALUACIONES v ON s.I_SINIES_ID = v.I_SINIESTRO_ID
+                LEFT JOIN T_CONDUCTORES c ON s.I_CONDUC_ID = c.I_CONDUC_ID
+                LEFT JOIN T_PAGOS_POLIZA p ON s.I_SINIES_ID = p.I_SINIESTRO_ID
+        WHERE
+            s.I_SINIES_ID = #{iSiniesID}
+        ]]>
+    </select>
+
+    <!-- ResultMap para mapear el DTO SiniestroDetalleRespuestaDTO -->
+    <resultMap id="SiniestroDetalleResultMap" type="com.qualitas.portal.fraudes.account.dto.response.SiniestroDetalleRespuestaDTO">
+        <result property="vNombreCortoProveedor" column="NOMBRE_PROVEEDOR"/>
+        <result property="vTipoProveedor" column="TIPO_PROVEEDOR"/>
+        <result property="vNombreAsegurado" column="NOMBRE_ASEGURADO"/>
+        <result property="vPoliza" column="POLIZA"/>
+        <result property="vPaqueteCobertura" column="PAQUETE_COBERTURA"/>
+        <result property="vSerie" column="SERIE"/>
+        <result property="dInicio" column="INICIO" jdbcType="DATE"/>
+        <result property="vEndoso" column="ENDOSO"/>
+        <result property="vEntidad" column="ENTIDAD"/>
+    </resultMap>
+
+    <!-- Consulta para obtener el detalle del siniestro -->
+    <select id="obtenerSiniestroDetalle" resultMap="SiniestroDetalleResultMap" parameterType="java.math.BigDecimal">
+        SELECT
+            pr.V_NOMBRE AS NOMBRE_PROVEEDOR,
+            tp.V_TIPO_PROVEEDOR AS TIPO_PROVEEDOR,
+            CONCAT(c.V_NOMBRES, ' ', c.V_APELLIDOS) AS NOMBRE_ASEGURADO,
+            c.V_POLIZA AS POLIZA,
+            co.V_NOMBRE AS PAQUETE_COBERTURA,
+            v.V_SERIE AS SERIE,
+            p.D_FECHA_PAGO AS INICIO,
+            p.V_ENDOSO AS ENDOSO,
+            e.V_ENTIDAD AS ENTIDAD
+        FROM
+            T_SINIESTROS s
+                LEFT JOIN
+            T_VALUACIONES v ON s.I_SINIES_ID = v.I_SINIESTRO_ID
+                LEFT JOIN
+            T_CONDUCTORES c ON v.I_CONDUCTOR_ID = c.I_CONDUC_ID
+                LEFT JOIN
+            T_PAGOS_POLIZA p ON s.I_SINIES_ID = p.I_SINIESTRO_ID
+                LEFT JOIN
+            T_PROVEEDORES pr ON s.I_PROVEEDOR_ID = pr.I_PROVEE_ID
+                LEFT JOIN
+            T_TIPO_PROVEEDOR tp ON pr.I_TIPO_PROV_ID = tp.I_T_PROVEE_ID
+                LEFT JOIN
+            T_COBERTURAS co ON s.I_SINIES_ID = co.I_SINIESTRO_ID
+                LEFT JOIN
+            T_ENTIDADES e ON s.I_ENTIDA_ID = e.I_ENTIDA_ID
+        WHERE
+            s.I_SINIES_ID = #{iSiniesID}
+    </select>
+
+
+
+</mapper>

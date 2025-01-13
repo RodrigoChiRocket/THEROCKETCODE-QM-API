@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.AnalistaDao">
+
+    <insert id="crearAnalista" useGeneratedKeys="true" keyProperty="iAnalisID">
+        INSERT INTO T_ANALISTAS (V_NOMBRE)
+        VALUES (#{vNombre})
+    </insert>
+
+    <select id="obtenerAnalista" resultMap="AnalistaResultado">
+        SELECT * FROM T_ANALISTAS WHERE I_ANALIS_ID = #{id}
+    </select>
+
+    <resultMap id="AnalistaResultado" type="com.qualitas.portal.fraudes.account.model.Analista">
+        <id property="iAnalisID" column="I_ANALIS_ID"/>
+        <result property="vNombre"  column="V_NOMBRE"/>
+    </resultMap>
+
+    <update id="actualizarAnalista" parameterType="com.qualitas.portal.fraudes.account.model.Analista">
+        UPDATE T_ANALISTAS
+        SET V_NOMBRE = #{vNombre}
+        WHERE I_ANALIS_ID = #{iAnalisID}
+    </update>
+
+    <select id="listarAnalistas" resultMap="AnalistaResultado">
+        SELECT * FROM T_ANALISTAS
+    </select>
+
+    <delete id="eliminarAnalista">
+        DELETE FROM T_ANALISTAS
+        WHERE I_ANALIS_ID = #{id}
+    </delete>
+
+    <select id="existeAnalista" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM T_ANALISTAS
+        WHERE V_NOMBRE = #{nombre}
+    </select>
+
+    <select id="existeAnalistaId" resultType="boolean" parameterType="java.math.BigDecimal">
+        SELECT COUNT(*)>0
+        FROM T_ANALISTAS
+        WHERE I_ANALIS_ID= #{id}
+    </select>
+
+</mapper>
