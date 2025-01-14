@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/valuaciones")
 @Validated
-public class ValuacionesController {
+public class ValuacionesControlador {
 
     @Autowired
     private ValuacionesService valuacionesService;

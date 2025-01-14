@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.EtiquetaSiseDao">
+
+
+    <!-- Mapper para obtener EtiquetaSise por ID -->
+    <select id="obtenerEtiquetaSise" resultMap="EtiquetaSiseResult">
+        SELECT * FROM T_ETIQUETA_SISE
+        WHERE I_ETI_SISE_ID = #{id}
+    </select>
+
+    <!-- ResultMap para mapear el resultado a la clase EtiquetaSise -->
+    <resultMap id="EtiquetaSiseResult" type="com.qualitas.portal.fraudes.account.model.EtiquetaSise">
+        <id property="iEtiSiseId" column="I_ETI_SISE_ID"/>
+        <result property="vEstatus" column="V_ESTATUS"/>
+        <result property="iAsignaId" column="I_ASIGNA_ID"/>
+        <result property="vUsuario" column="V_USUARIO"/>
+        <result property="dFecha" column="D_FECHA"/>
+        <result property="iSiniestroId" column="I_SINIESTRO_ID"/>
+    </resultMap>
+
+</mapper>

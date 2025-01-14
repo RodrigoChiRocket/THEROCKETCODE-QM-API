@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tipoProveedor")
-public class TipoProveedorController {
+public class TipoProveedorControlador {
 
     @Autowired
     private TipoProveedorService tipoProveedorService;

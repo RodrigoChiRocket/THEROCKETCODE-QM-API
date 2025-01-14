@@ -33,6 +33,12 @@
         SELECT * FROM T_COBERTURAS
     </select>
 
+    <!-- Obtener el nombre de la cobertura por ID -->
+    <select id="obtenerNombreCobertura" resultType="String">
+        SELECT V_NOMBRE FROM T_COBERTURAS WHERE I_COBERT_ID = #{id}
+    </select>
+
+
     <!-- Comprobar si una cobertura existe -->
     <select id="existeCobertura" resultType="boolean">
         SELECT COUNT(*) > 0 FROM T_COBERTURAS WHERE I_COBERT_ID = #{id}
