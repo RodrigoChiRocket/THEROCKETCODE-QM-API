@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.RolDao">
+    <resultMap id="RolResultado" type="com.qualitas.portal.fraudes.account.model.Rol">
+        <id property="iRolId"                  column="I_ROLE_ID" />
+        <result property="vRolNombre"               column="V_NOMBRE" />
+    </resultMap>
+
+    <resultMap id="PermisosResultado" type="com.qualitas.portal.fraudes.account.model.Permiso">
+        <id property="iPermisoId"                  column="I_PERMISO_ID" />
+        <result property="vPermisoNombre"               column="V_NOMBRE" />
+    </resultMap>
+
+    <insert id="crearRol" parameterType="com.qualitas.portal.fraudes.account.model.Rol">
+        <selectKey keyProperty="iRolId" resultType="BigDecimal" order="BEFORE">
+            SELECT "CONVENIOS/admin".SEQ_T_ROLES.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO "CONVENIOS/admin".T_ROLES (I_ROLE_ID, V_NOMBRE) VALUES (#{iRolId}, #{vRolNombre})
+    </insert>
+
+    <select id="obtenerRol" resultMap="RolResultado">
+        SELECT * FROM "CONVENIOS/admin".T_ROLES WHERE I_ROLE_ID = #{iRolId}
+    </select>
+
+    <select id="obtenerRoles" resultMap="RolResultado">
+        SELECT * FROM "CONVENIOS/admin".T_ROLES
+    </select>
+
+    <select id="obtenerPermisos" resultType="String">
+        SELECT P.V_NOMBRE FROM "CONVENIOS/admin".T_PERMISOS P
+                                                    INNER JOIN "CONVENIOS/admin".T_ROLES_PERMISOS RP
+                                                               ON P.I_PERMISO_ID = RP.I_PERMISO_ID
+        WHERE RP.I_ROLE_ID = #{iRolId}
+    </select>
+
+    <insert id="crearRolPermiso" parameterType="map">
+        INSERT INTO "CONVENIOS/admin".T_ROLES_PERMISOS (I_ROLE_ID, I_PERMISO_ID)
+        VALUES (#{iRolId}, #{iPermisoId})
+    </insert>
+</mapper>

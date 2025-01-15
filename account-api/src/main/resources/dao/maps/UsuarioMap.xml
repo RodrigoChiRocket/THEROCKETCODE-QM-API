@@ -22,6 +22,7 @@
         WHERE V_EMAIL = #{vEmail}
     </update>
 
+
     <select id="obtenerProximoIDUsuario" resultType="long">
         SELECT SEQ_USUARIO.NEXTVAL FROM DUAL
     </select>
