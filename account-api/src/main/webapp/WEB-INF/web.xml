@@ -65,55 +65,14 @@
        <role-name>administrator</role-name>
      </auth-constraint>
    </security-constraint>
-
-    <!-- Configuración del filtro CORS -->
+<!--
     <filter>
-        <filter-name>FiltroCORS</filter-name>
-        <filter-class>com.qualitas.portal.accountfraudesapi.configuracion.cors.FiltroCORS</filter-class>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
+
     <filter-mapping>
-        <filter-name>FiltroCORS</filter-name>
+        <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <!-- Configuración del filtro CRLF -->
-    <filter>
-        <filter-name>FiltroCRLF</filter-name>
-        <filter-class>com.qualitas.portal.accountfraudesapi.configuracion.filter.FiltroCRLF</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>FiltroCRLF</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <!-- Configuración del filtro XSS -->
-    <filter>
-        <filter-name>FiltroXSS</filter-name>
-        <filter-class>com.qualitas.portal.accountfraudesapi.configuracion.filter.FiltroXSS</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>FiltroXSS</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <!-- Configuración del filtro JWT -->
-    <filter>
-        <filter-name>FiltroJWT</filter-name>
-        <filter-class>com.qualitas.portal.accountfraudesapi.configuracion.filter.FiltroJWT</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>FiltroJWT</filter-name>
-        <url-pattern>/api/cuenta/obtener-usuario</url-pattern>
-        <url-pattern>/api/cuenta/autenticar</url-pattern>
-        <url-pattern>/api/cuenta/obtener-rol</url-pattern>
-        <url-pattern>/api/cuenta/obtener-roles</url-pattern>
-        <url-pattern>/api/cuenta/verificar-rol-usuario</url-pattern>
-        <url-pattern>/api/cuenta/obtener-user-id</url-pattern>
-        <url-pattern>/api/cuenta/actualizar</url-pattern>
-        <url-pattern>/api/cuenta/eliminar-usuario</url-pattern>
-        <url-pattern>/api/cuenta/obtener-usuarios-rol</url-pattern>
-        <url-pattern>/api/cuenta/obtener-usuario-by-abogado</url-pattern>
-        <url-pattern>/api/cuenta/obtener-token-data</url-pattern>
-    </filter-mapping>
-
+    </filter-mapping> -->
 </web-app>
