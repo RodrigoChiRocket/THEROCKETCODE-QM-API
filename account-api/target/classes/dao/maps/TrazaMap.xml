@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.TrazaDao">
+    <!-- Inserta un nuevo registro de traza -->
+    <insert id="crearTraza">
+        INSERT INTO T_TRAZAS (V_MOVIMIENTO, D_FECHA_MOVIMIENTO, I_SINIESTRO_ID)
+        VALUES (#{vMovimiento}, #{dFechaMovimiento}, #{iSiniestroID})
+    </insert>
+
+    <!-- Listar trazas por ID de siniestro -->
+    <select id="getTrazasBySiniestroId" resultMap="TrazaMap">
+        SELECT * FROM T_TRAZAS WHERE I_SINIESTRO_ID = #{siniestroId}
+    </select>
+
+    <!-- Mapeo de resultados a la clase Traza -->
+    <resultMap id="TrazaMap" type="com.qualitas.portal.fraudes.account.model.Traza">
+        <id property="iTrazaId" column="I_TRAZA_ID" />
+        <result property="vMovimiento" column="V_MOVIMIENTO" />
+        <result property="dFechaMovimiento" column="D_FECHA_MOVIMIENTO" />
+        <result property="iSiniestroID" column="I_SINIESTRO_ID" />
+    </resultMap>
+</mapper>

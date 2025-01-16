@@ -24,12 +24,12 @@
         <result property="iConductorID" column="I_CONDUC_ID" jdbcType="BIGINT"/>
     </resultMap>
 
-    <select id="existeSiniestro" parameterType="int" resultType="boolean">
+    <select id="existeSiniestro" parameterType="java.math.BigDecimal" resultType="boolean" >
         SELECT COUNT(*) > 0 FROM T_SINIESTROS WHERE I_SINIES_ID = #{iSiniesID}
     </select>
 
     <!-- Insertar un nuevo Siniestro -->
-    <insert id="insertSiniestro" parameterType="com.qualitas.portal.fraudes.account.model.Siniestro">
+    <insert id="insertSiniestro" parameterType="com.qualitas.portal.fraudes.account.model.Siniestro" useGeneratedKeys="true" keyProperty="iSiniesID">
         INSERT INTO T_SINIESTROS (
             I_SCORE, V_SINIESTRO_RELACION, I_ANALISTA_ID, I_PROVEEDOR_ID,
             D_FECHA_ASIG_ANALISTA, D_FECHA_ASIG_PROVEEDOR, V_ETIQUETA_SISE, V_ESTATUS_PLAT, I_MARCA_ID,
