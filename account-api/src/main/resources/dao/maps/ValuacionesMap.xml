@@ -34,7 +34,7 @@
         <result property="vSerie" column="V_SERIE"/>
         <result property="dFechaValuacion" column="D_FECHA_VALUACION"/>
         <result property="vEstatusValuacion" column="V_ESTATUS_VALUACION"/>
-        <result property="iSiniestroID" column="SINIESTRO_ID"/>
+        <result property="iSiniestroID" column="I_SINIESTRO_ID"/>
     </resultMap>
 
 </mapper>
