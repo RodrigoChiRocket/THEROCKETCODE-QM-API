@@ -34,6 +34,10 @@
         SELECT * FROM T_REGLAS_ALERTADAS
     </select>
 
+    <select id="obtenerReglasAlertadasPorSiniestro" resultMap="ReglaAlertadaResultado">
+        SELECT * FROM T_REGLAS_ALERTADAS WHERE I_SINIESTRO_ID = #{id}
+    </select>
+
     <!-- Eliminación de una regla alertada -->
     <delete id="eliminarReglaAlertada">
         DELETE FROM T_REGLAS_ALERTADAS WHERE I_R_ALERTA_ID = #{id}

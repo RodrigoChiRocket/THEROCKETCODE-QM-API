@@ -35,6 +35,12 @@ public class ReglasAlertadasControlador {
         return reglaAlertadaDTO != null ? ResponseEntity.ok(reglaAlertadaDTO) : ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/siniestro/{id}")
+    public ResponseEntity<List<ReglaAlertadaDTO>> obtenerReglasAlertadasPorSiniestro(@PathVariable BigDecimal id) {
+        List<ReglaAlertadaDTO> reglaAlertadaDTOS = reglasAlertadasService.obtenerReglasAlertadasPorSiniestro(id);
+        return ResponseEntity.ok(reglaAlertadaDTOS);
+    }
+
     // Endpoint para actualizar una regla alertada
     @PutMapping("/{id}")
     public ResponseEntity<String> actualizarReglaAlertada(@PathVariable BigDecimal id, @RequestBody ReglaAlertadaDTO reglaAlertadaDTO) {
