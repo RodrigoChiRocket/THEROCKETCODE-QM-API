@@ -38,8 +38,8 @@ public class SiniestroControlador {
     // Endpoint para actualizar un siniestro
     @PutMapping("/{id}")
     public ResponseEntity<String> actualizarSiniestro(@PathVariable BigDecimal id, @RequestBody SiniestroDTO siniestroDTO) {
-        siniestroDTO.setiSiniesID(id);
-        siniestroService.actualizarSiniestro(siniestroDTO);
+
+        siniestroService.actualizarSiniestro(siniestroDTO, id);
         return new ResponseEntity<>("Siniestro actualizado con éxito", HttpStatus.OK);
     }
 

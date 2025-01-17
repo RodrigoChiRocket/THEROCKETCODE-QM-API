@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.DocumentoDao">
+
+    <select id="obtenerDocumento" resultMap="DocumentoResultado">
+        SELECT * FROM T_DOCUMENTOS WHERE I_DOCUMENTOS_ID = #{id}
+    </select>
+
+    <resultMap id="DocumentoResultado" type="com.qualitas.portal.fraudes.account.model.Documento">
+        <id property="iDocumentoId" column="I_DOCUMENTOS_ID"/>
+        <result property="vCalificacion" column="V_CLASIFICACION_DOC"/>
+        <result property="vUsuario" column="V_USUARIO"/>
+        <result property="dFechaModificacion" column="D_FECHA_MODIFICACION"/>
+        <result property="iSiniestroID" column="I_SINIESTRO_ID"/>
+    </resultMap>
+
+</mapper>
