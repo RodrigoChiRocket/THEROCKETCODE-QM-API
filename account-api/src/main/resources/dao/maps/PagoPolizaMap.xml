@@ -64,4 +64,8 @@
         WHERE I_P_POLIZA_ID = #{id}
     </select>
 
+    <select id="obtenerPagosPorSiniestro" resultMap="PagoPolizaResultado">
+        SELECT * FROM T_PAGOS_POLIZA WHERE I_SINIESTRO_ID = #{id}
+    </select>
+
 </mapper>
