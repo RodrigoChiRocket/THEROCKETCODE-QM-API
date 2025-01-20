@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.dao.NotificacionDao">
+
+    <!-- Mapeo del resultado para la clase Notificacion -->
+    <resultMap id="NotificacionResultMap" type="com.qualitas.portal.fraudes.account.model.Notificacion">
+        <result column="I_NOTIFI_ID" property="iNotificacionId" />
+        <result column="D_FECHA" property="dfecha" />
+        <result column="V_USUARIO" property="vUsuario" />
+        <result column="V_RESPON_ASIG" property="vResponsableSig" />
+        <result column="V_TIPO" property="vTipo" />
+        <result column="V_DETALLE" property="vDetalles" />
+    </resultMap>
+
+    <!-- Consulta para obtener una notificación por ID -->
+    <select id="obtenerNotificacion" parameterType="java.math.BigDecimal" resultMap="NotificacionResultMap">
+        SELECT I_NOTIFI_ID, D_FECHA, V_USUARIO, V_RESPON_ASIG, V_TIPO, V_DETALLE
+        FROM T_NOTIFICACIONES
+        WHERE I_NOTIFI_ID = #{id}
+    </select>
+
+</mapper>
