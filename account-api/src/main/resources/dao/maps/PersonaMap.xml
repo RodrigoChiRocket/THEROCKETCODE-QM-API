@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.Infrastructure.dao.PersonaDao">
+    <!-- Incluir el TypeHandler para el campo Sexo -->
+    <resultMap id="PersonaResultMap" type="com.qualitas.portal.fraudes.account.domain.model.Persona">
+        <id property="iPersonaId" column="I_CATALO_ID"/>
+        <result property="vNombre" column="V_NOMBRE"/>
+        <result property="vSexo" column="V_SEXO" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="iCodigoPostal" column="I_CODIGO_POSTAL"/>
+        <result property="dFechaNacimiento" column="D_FECHA_NACIMIENTO"/>
+    </resultMap>
+
+    <!-- Consulta para crear una Persona -->
+    <insert id="crearPersona" parameterType="com.qualitas.portal.fraudes.account.domain.model.Persona" useGeneratedKeys="true" keyProperty="iPersonaId">
+        INSERT INTO T_CATALOGO_PERSONAS (V_NOMBRE, V_SEXO, I_CODIGO_POSTAL, D_FECHA_NACIMIENTO)
+        VALUES (#{vNombre}, #{vSexo, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, #{iCodigoPostal}, #{dFechaNacimiento})
+    </insert>
+
+    <!-- Consulta para obtener una Persona por ID -->
+    <select id="obtenerPersona" parameterType="java.math.BigDecimal" resultMap="PersonaResultMap">
+        SELECT I_CATALO_ID, V_NOMBRE, V_SEXO, I_CODIGO_POSTAL, D_FECHA_NACIMIENTO
+        FROM T_CATALOGO_PERSONAS
+        WHERE I_CATALO_ID = #{id}
+    </select>
+
+    <!-- Consulta para actualizar una Persona -->
+    <update id="actualizarPersona" parameterType="com.qualitas.portal.fraudes.account.domain.model.Persona">
+        UPDATE T_CATALOGO_PERSONAS
+        SET V_NOMBRE = #{vNombre},
+            V_SEXO = #{vSexo, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+            I_CODIGO_POSTAL = #{iCodigoPostal},
+            D_FECHA_NACIMIENTO = #{dFechaNacimiento}
+        WHERE I_CATALO_ID = #{iPersonaId}
+    </update>
+
+    <!-- Consulta para listar todas las Personas -->
+    <select id="listarPersonas" resultMap="PersonaResultMap">
+        SELECT I_CATALO_ID, V_NOMBRE, V_SEXO, I_CODIGO_POSTAL, D_FECHA_NACIMIENTO
+        FROM T_CATALOGO_PERSONAS
+    </select>
+
+    <!-- Consulta para eliminar una Persona -->
+    <delete id="eliminarPersona" parameterType="java.math.BigDecimal">
+        DELETE FROM T_CATALOGO_PERSONAS
+        WHERE I_CATALO_ID = #{id}
+    </delete>
+</mapper>

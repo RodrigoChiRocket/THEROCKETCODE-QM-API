@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.Infrastructure.dao.RutinaCargaDao">
+
+    <!-- Mapeo del resultado de la consulta, mapeando las columnas de la tabla a las propiedades de la clase RutinaCarga -->
+    <resultMap id="RutinaCargaResultMap" type="com.qualitas.portal.fraudes.account.domain.model.RutinaCarga">
+        <id column="I_RUTINA_CARGA_ID" property="iRutinaCargaId" />
+        <result column="V_PORTAL" property="vPortal" />
+        <result column="D_FECHA_ACTUAL" property="dFechaActual" />
+        <result column="V_NRO_DATOS" property="vNRODatos" />
+        <result column="V_PROGRAMACION" property="vProgramacion" />
+        <result column="V_ESTATUS" property="vEstatus" />
+        <result column="V_HABILITADO" property="vHabilitado" />
+    </resultMap>
+
+    <!-- Insertar una nueva rutina de carga -->
+    <insert id="crearRutinaCarga" parameterType="com.qualitas.portal.fraudes.account.domain.model.RutinaCarga" useGeneratedKeys="true" keyProperty="iRutinaCargaId">
+        INSERT INTO T_RUTINAS_CARGA (
+            V_PORTAL,
+            D_FECHA_ACTUAL,
+            V_NRO_DATOS,
+            V_PROGRAMACION,
+            V_ESTATUS,
+            V_HABILITADO
+        ) VALUES (
+                     #{vPortal},
+                     #{dFechaActual},
+                     #{vNRODatos},
+                     #{vProgramacion},
+                     #{vEstatus},
+                     #{vHabilitado}
+                 )
+    </insert>
+
+
+    <!-- Obtener una rutina de carga por ID -->
+    <select id="obtenerRutinaCarga" parameterType="java.math.BigDecimal" resultMap="RutinaCargaResultMap">
+        SELECT
+            I_RUTINA_CARGA_ID,
+            V_PORTAL,
+            D_FECHA_ACTUAL,
+            V_NRO_DATOS,
+            V_PROGRAMACION,
+            V_ESTATUS,
+            V_HABILITADO
+        FROM T_RUTINAS_CARGA
+        WHERE I_RUTINA_CARGA_ID = #{id}
+    </select>
+
+    <!-- Actualizar una rutina de carga existente -->
+    <update id="actualizarRutinaCarga" parameterType="com.qualitas.portal.fraudes.account.domain.model.RutinaCarga">
+        UPDATE T_RUTINAS_CARGA
+        SET
+            V_PORTAL = #{vPortal},
+            D_FECHA_ACTUAL = #{dFechaActual},
+            V_NRO_DATOS = #{vNRODatos},
+            V_PROGRAMACION = #{vProgramacion},
+            V_ESTATUS = #{vEstatus},
+            V_HABILITADO = #{vHabilitado}
+        WHERE I_RUTINA_CARGA_ID = #{iRutinaCargaId}
+    </update>
+
+    <!-- Listar todas las rutinas de carga -->
+    <select id="listarRutinaCarga" resultMap="RutinaCargaResultMap">
+        SELECT
+            I_RUTINA_CARGA_ID,
+            V_PORTAL,
+            D_FECHA_ACTUAL,
+            V_NRO_DATOS,
+            V_PROGRAMACION,
+            V_ESTATUS,
+            V_HABILITADO
+        FROM T_RUTINAS_CARGA
+    </select>
+
+    <!-- Eliminar una rutina de carga por ID -->
+    <delete id="eliminarRutinaCarga" parameterType="java.math.BigDecimal">
+        DELETE FROM T_RUTINAS_CARGA
+        WHERE I_RUTINA_CARGA_ID = #{id}
+    </delete>
+
+</mapper>
