@@ -31,11 +31,12 @@ public class PagoPolizaControlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPago.getiPagoPolizaId());
     }
 
+    /*
     @GetMapping("/siniestro/{id}")
     public ResponseEntity<List<PagoPolizaDTO>> obtenerPagosPolizaPorSinistro(@PathVariable BigDecimal id) {
         List<PagoPolizaDTO> pagos = pagoPolizaService.obtenerPagosPolizaPorSinistro(id);
         return ResponseEntity.ok(pagos);
-    }
+    }*/
 
 
     // Actualizar un pago de póliza (entrada como DTO)

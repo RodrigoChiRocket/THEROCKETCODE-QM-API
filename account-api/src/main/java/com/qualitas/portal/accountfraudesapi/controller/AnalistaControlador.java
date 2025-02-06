@@ -16,11 +16,18 @@ public class AnalistaControlador {
 
     private final AnalistaService analistaService;
 
+
+
     @Autowired
     public AnalistaControlador(AnalistaService analistaService) {
         this.analistaService = analistaService;
     }
 
+
+    @GetMapping
+    public String obtenerSaludo() {
+        return analistaService.checkout();
+    }
     // Endpoint para crear un analista
     @PostMapping
     public ResponseEntity<BigDecimal> crearAnalista(@RequestBody AnalistaDTO analistaDTO) {
