@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AutoMarcaDao">
+
+    <resultMap id="AutoMarcaResultMap" type="com.qualitas.portal.fraudes.account.domain.model.AutoMarca">
+        <id property="iAutoMarcaId" column="I_AUTO_MARCA_ID" />
+        <result property="vNombre" column="V_NOMBRE" />
+        <result property="dFechaCreacion" column="D_FECHA_CREACION" />
+    </resultMap>
+
+    <insert id="crearAutoMarca" parameterType="com.qualitas.portal.fraudes.account.domain.model.AutoMarca">
+        INSERT INTO C##MULTICOTIZADOR.T_AUTOS_MARCA_MC (I_AUTO_MARCA_ID, V_NOMBRE, D_FECHA_CREACION)
+        VALUES (#{iAutoMarcaId}, #{vNombre}, #{dFechaCreacion})
+    </insert>
+
+    <select id="obtenerAutoMarca" resultMap="AutoMarcaResultMap" parameterType="java.math.BigDecimal">
+        SELECT * FROM C##MULTICOTIZADOR.T_AUTOS_MARCA_MC WHERE I_AUTO_MARCA_ID = #{id}
+    </select>
+
+    <update id="actualizarAutoMarca" parameterType="com.qualitas.portal.fraudes.account.domain.model.AutoMarca">
+        UPDATE C##MULTICOTIZADOR.T_AUTOS_MARCA_MC
+        SET V_NOMBRE = #{vNombre}, D_FECHA_CREACION = #{dFechaCreacion}
+        WHERE I_AUTO_MARCA_ID = #{iAutoMarcaId}
+    </update>
+
+    <select id="listarAutoMarcas" resultMap="AutoMarcaResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.T_AUTOS_MARCA_MC
+    </select>
+
+    <delete id="eliminarAutoMarca" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.T_AUTOS_MARCA_MC WHERE I_AUTO_MARCA_ID = #{id}
+    </delete>
+
+</mapper>

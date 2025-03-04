@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="39bfa723-5af6-4f17-9814-7d5fc317f85b" name="Changes" comment="dwsdsd">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/account-api.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/configuracion/permitido/HostsPermitidos.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/configuracion/security/CustomUserDetailsService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/configuracion/security/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/AutenticacionControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/AutoControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/AutoDescripcionControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/AutoModeloControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/CheckControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/PersonaControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/ResultadoConsultaControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/RolControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/RutinaCargaController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/controller/UsuarioControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/response/Response.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/util/exception/UnauthorizedException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/util/jwt/JwtAuthenticationFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/qualitas/portal/accountfraudesapi/util/jwt/JwtTokenUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/application-exceptions.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/hosts.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/jdbc-ora.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/jwt.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/spring/application-beans-dao.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/spring/application-beans-service.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/spring/application-beans-util.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/spring/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/velocity.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config/ws-qualitas.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dao/maps/AutoDescripcionMap.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dao/maps/AutoMap.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dao/maps/AutoModeloMap.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dao/maps/PersonaMap.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dao/maps/ResultadoConsultaMap.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dao/maps/RolPermisosMap.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dao/maps/RutinaCargaMap.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dao/maps/UsuarioMap.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/spring/spring-context.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/internal_error_400.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/internal_error_403.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/internal_error_404.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/internal_error_500.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/internal_error_throwable.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/weblogic.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="FxmlFile" />
+        <option value="spring-beans.schema" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2q2rKUIouToDvkCod6r5RNI424N" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.account-fraudes-api [clean,install].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Smart Tomcat Pro.Account.executor": "Run",
+    "Smart Tomcat Pro.Login.executor": "Run",
+    "Smart Tomcat Pro.Unnamed (1).executor": "Run",
+    "Smart Tomcat Pro.Unnamed.executor": "Run",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/rodri/Downloads/ROCKET-Q/qualitas-fraudes-api/multicotizador-api",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Smart Tomcat Pro.Login">
+    <configuration name="Account" type="SmartTomcatProRunConfigurationType">
+      <deployments>
+        <tomcat-deployment context-path="/account-fraudes-api" location="$PROJECT_DIR$/src/main/webapp" module="account-fraudes-api" type="DIR" />
+      </deployments>
+      <option name="httpPort" value="8080" />
+      <option name="id" value="5e4f2d74-b2ef-4089-a8f1-3f4f24025e05" />
+      <option name="jdkName" value="1.8" />
+      <predefined_log_file enabled="true" id="Tomcat Localhost Log" />
+      <predefined_log_file enabled="true" id="Tomcat Access Log" />
+      <predefined_log_file id="Tomcat Catalina Log" />
+      <predefined_log_file id="Tomcat Manager Log" />
+      <predefined_log_file id="Tomcat Host Manager Log" />
+      <option name="tomcatId" value="d822d08a-6a2a-4a7e-a793-5f4d854b56fe" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Login" type="SmartTomcatProRunConfigurationType">
+      <deployments>
+        <tomcat-deployment context-path="/account-fraudes-api" location="$PROJECT_DIR$/src/main/webapp" module="account-fraudes-api" type="DIR" />
+      </deployments>
+      <option name="httpPort" value="8080" />
+      <option name="id" value="2eebd4e8-cec6-4314-bb11-f20e7b27f6df" />
+      <predefined_log_file enabled="true" id="Tomcat Localhost Log" />
+      <predefined_log_file enabled="true" id="Tomcat Access Log" />
+      <predefined_log_file id="Tomcat Catalina Log" />
+      <predefined_log_file id="Tomcat Manager Log" />
+      <predefined_log_file id="Tomcat Host Manager Log" />
+      <option name="tomcatId" value="d822d08a-6a2a-4a7e-a793-5f4d854b56fe" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Unnamed (1)" type="SmartTomcatProRunConfigurationType">
+      <deployments>
+        <tomcat-deployment context-path="/account-fraudes-api" location="$PROJECT_DIR$/src/main/webapp" module="account-fraudes-api" type="DIR" />
+      </deployments>
+      <option name="httpPort" value="8081" />
+      <option name="id" value="e4e33647-7794-4baf-97ed-0499304248f1" />
+      <predefined_log_file enabled="true" id="Tomcat Localhost Log" />
+      <predefined_log_file enabled="true" id="Tomcat Access Log" />
+      <predefined_log_file id="Tomcat Catalina Log" />
+      <predefined_log_file id="Tomcat Manager Log" />
+      <predefined_log_file id="Tomcat Host Manager Log" />
+      <option name="tomcatId" value="d822d08a-6a2a-4a7e-a793-5f4d854b56fe" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Unnamed" type="SmartTomcatProRunConfigurationType">
+      <deployments>
+        <tomcat-deployment context-path="/account-fraudes-api" location="$PROJECT_DIR$/src/main/webapp" module="account-fraudes-api" type="DIR" />
+      </deployments>
+      <option name="httpPort" value="8080" />
+      <option name="id" value="34f7f1cb-4226-4079-9d78-fcfac6866b43" />
+      <option name="jdkName" value="1.8" />
+      <predefined_log_file enabled="true" id="Tomcat Localhost Log" />
+      <predefined_log_file enabled="true" id="Tomcat Access Log" />
+      <predefined_log_file id="Tomcat Catalina Log" />
+      <predefined_log_file id="Tomcat Manager Log" />
+      <predefined_log_file id="Tomcat Host Manager Log" />
+      <option name="tomcatId" value="d822d08a-6a2a-4a7e-a793-5f4d854b56fe" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Smart Tomcat Pro.Account" />
+      <item itemvalue="Smart Tomcat Pro.Login" />
+      <item itemvalue="Smart Tomcat Pro.Unnamed (1)" />
+      <item itemvalue="Smart Tomcat Pro.Unnamed" />
+    </list>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-22-openjdk-22-4caba194b151-f504ca98" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="39bfa723-5af6-4f17-9814-7d5fc317f85b" name="Changes" comment="" />
+      <created>1733871447756</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1733871447756</updated>
+      <workItem from="1733871448938" duration="3868000" />
+      <workItem from="1733889429284" duration="950000" />
+      <workItem from="1733890621026" duration="1862000" />
+      <workItem from="1733893461376" duration="569000" />
+      <workItem from="1733894131828" duration="2361000" />
+      <workItem from="1733897939090" duration="458000" />
+      <workItem from="1733933307773" duration="1163000" />
+      <workItem from="1733936388829" duration="7869000" />
+      <workItem from="1733947458519" duration="77000" />
+      <workItem from="1733947980085" duration="759000" />
+      <workItem from="1733950465055" duration="3907000" />
+      <workItem from="1733959199788" duration="1622000" />
+      <workItem from="1733974399910" duration="1586000" />
+      <workItem from="1733976392643" duration="4336000" />
+      <workItem from="1734024716198" duration="3603000" />
+      <workItem from="1734117635043" duration="4000" />
+      <workItem from="1734462442954" duration="3313000" />
+      <workItem from="1734468625429" duration="297000" />
+      <workItem from="1734481934769" duration="2737000" />
+      <workItem from="1734490578985" duration="1744000" />
+      <workItem from="1734493712157" duration="888000" />
+      <workItem from="1734496977100" duration="1094000" />
+      <workItem from="1734535895139" duration="4603000" />
+      <workItem from="1734546223965" duration="707000" />
+      <workItem from="1734547476961" duration="595000" />
+      <workItem from="1734550749759" duration="4424000" />
+      <workItem from="1734558766523" duration="4443000" />
+      <workItem from="1734581151710" duration="2181000" />
+      <workItem from="1734583362147" duration="2844000" />
+      <workItem from="1734624413517" duration="14644000" />
+      <workItem from="1734650783138" duration="43000" />
+      <workItem from="1734729869906" duration="7127000" />
+      <workItem from="1735030772924" duration="694000" />
+      <workItem from="1735014854154" duration="21000" />
+      <workItem from="1735052369081" duration="2801000" />
+      <workItem from="1735058259774" duration="2367000" />
+      <workItem from="1735069676193" duration="1763000" />
+      <workItem from="1735230383238" duration="5281000" />
+      <workItem from="1735311134900" duration="6041000" />
+      <workItem from="1735580813072" duration="2425000" />
+      <workItem from="1735591287665" duration="6423000" />
+      <workItem from="1735611009434" duration="2429000" />
+      <workItem from="1735679617181" duration="1013000" />
+      <workItem from="1735684516177" duration="2031000" />
+      <workItem from="1735835797977" duration="3307000" />
+      <workItem from="1735839156098" duration="2781000" />
+      <workItem from="1735842142058" duration="2235000" />
+      <workItem from="1735844951075" duration="4189000" />
+      <workItem from="1735856768725" duration="1454000" />
+      <workItem from="1735858389041" duration="618000" />
+      <workItem from="1735868275275" duration="10650000" />
+      <workItem from="1735919914842" duration="1311000" />
+      <workItem from="1735921499298" duration="1881000" />
+      <workItem from="1735923494834" duration="439000" />
+      <workItem from="1736025195422" duration="172000" />
+      <workItem from="1736038804119" duration="1106000" />
+      <workItem from="1736791090938" duration="2638000" />
+      <workItem from="1736807130659" duration="62000" />
+      <workItem from="1736810468088" duration="3629000" />
+      <workItem from="1736872078707" duration="10337000" />
+      <workItem from="1736886790367" duration="1356000" />
+      <workItem from="1736965836840" duration="452000" />
+      <workItem from="1736966347759" duration="4926000" />
+      <workItem from="1736972256214" duration="330000" />
+      <workItem from="1736973180097" duration="1122000" />
+      <workItem from="1736982078968" duration="1034000" />
+      <workItem from="1737049005444" duration="4399000" />
+      <workItem from="1737135765586" duration="2290000" />
+      <workItem from="1737391418387" duration="2008000" />
+      <workItem from="1737482876343" duration="363000" />
+      <workItem from="1737489014825" duration="587000" />
+      <workItem from="1737492384533" duration="1345000" />
+      <workItem from="1737497618614" duration="1467000" />
+      <workItem from="1737505490545" duration="36000" />
+      <workItem from="1737505932925" duration="789000" />
+      <workItem from="1737511227028" duration="706000" />
+      <workItem from="1737511954164" duration="34000" />
+      <workItem from="1737512205797" duration="8000" />
+      <workItem from="1737512235797" duration="23000" />
+      <workItem from="1737512272326" duration="28000" />
+      <workItem from="1737512451986" duration="13000" />
+      <workItem from="1737512597958" duration="2838000" />
+      <workItem from="1737516547612" duration="1134000" />
+      <workItem from="1737569427855" duration="7232000" />
+      <workItem from="1737580859454" duration="4188000" />
+      <workItem from="1737585266910" duration="349000" />
+      <workItem from="1737585801302" duration="4179000" />
+      <workItem from="1737590601347" duration="18000" />
+      <workItem from="1737593305669" duration="2745000" />
+      <workItem from="1737597437931" duration="415000" />
+      <workItem from="1737599653043" duration="630000" />
+      <workItem from="1737604666867" duration="370000" />
+      <workItem from="1737605219761" duration="2084000" />
+      <workItem from="1737663919194" duration="2446000" />
+      <workItem from="1737992740809" duration="1699000" />
+      <workItem from="1738104537628" duration="2467000" />
+      <workItem from="1738803248898" duration="2745000" />
+      <workItem from="1738790892723" duration="5572000" />
+      <workItem from="1738866544394" duration="618000" />
+      <workItem from="1740546532671" duration="882000" />
+    </task>
+    <task id="LOCAL-00001" summary="dwsdsd">
+      <option name="closed" value="true" />
+      <created>1737136577222</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1737136577222</updated>
+    </task>
+    <task id="LOCAL-00002" summary="dwsdsd">
+      <option name="closed" value="true" />
+      <created>1737136988034</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1737136988034</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="feature/QF-184_QF-183" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="dwsdsd" />
+    <option name="LAST_COMMIT_MESSAGE" value="dwsdsd" />
+  </component>
+</project>

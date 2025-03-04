@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:jee="http://www.springframework.org/schema/jee"
+	   xmlns:cache="http://www.springframework.org/schema/cache"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xsi:schemaLocation="
+         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+         http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd
+         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+         http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.2.xsd"
+	   default-autowire="byName">
+
+	<bean id="dataSourceOracle" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@ec2-18-219-35-48.us-east-2.compute.amazonaws.com:1521:XE" />
+		<property name="username" value="C##MULTICOTIZADOR" />
+		<property name="password" value="123456" />
+	</bean>
+	<!-- Configuración de MyBatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceOracle" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:dao/maps/*.xml</value>
+			</list>
+		</property>
+		<property name="typeAliases">
+			<list>
+				<value>org.mybatis.caches.oscache.OSCache</value>
+				<value>com.qualitas.portal.fraudes.account.domain.model.Usuario</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"/>
+	</bean>
+
+	<context:component-scan base-package="com.qualitas.portal" />
+
+	<!-- Dao de Usuario -->
+	<bean id="usuarioDao" class="com.qualitas.portal.fraudes.account.Infrastructure.dao.impl.UsuarioDaoImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- Configuración de transacciones -->
+	<bean id="dataTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceOracle" />
+	</bean>
+
+	<!-- Bean para manejo de excepciones -->
+	<bean id="exceptionBuilder"
+		  class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod">
+			<value>com.certum.commons.lang.ExceptionBuilder.getInstance</value>
+		</property>
+	</bean>
+
+	<bean id="exceptionBuilderInitializer"
+		  class="com.certum.commons.lang.ExceptionBuilderInitializerBean">
+		<property name="messageFactoryClass"
+				  value="com.certum.commons.lang.resources.DiscoverMessageResourcesFactory" />
+		<property name="resourceFile"
+				  value="config/application-exceptions" />
+	</bean>
+
+</beans>

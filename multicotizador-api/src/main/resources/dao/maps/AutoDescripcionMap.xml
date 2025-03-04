@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.Infrastructure.dao.AutoDescripcionDao">
+
+    <resultMap id="AutoDescripcionResultMap" type="com.qualitas.portal.fraudes.account.domain.model.AutoDescripcion">
+        <id property="iAutoDescripcionId" column="I_AUTO_DESCRIPCION_ID" />
+        <result property="iAutoModeloClave" column="I_AUTO_MODELO_CLAVE" />
+        <result property="vNombre" column="V_NOMBRE" />
+        <result property="dFechaCreacion" column="D_FECHA_CREACION" />
+        <result property="iUsuarioCreacion" column="I_USUARIO_CREACION" />
+    </resultMap>
+
+    <insert id="crearAutoDescripcion" parameterType="com.qualitas.portal.fraudes.account.domain.model.AutoDescripcion">
+        INSERT INTO C##MULTICOTIZADOR.T_AUTOS_DESCRIPCION_MC (
+            I_AUTO_DESCRIPCION_ID,
+            I_AUTO_MODELO_CLAVE,
+            V_NOMBRE,
+            D_FECHA_CREACION,
+            I_USUARIO_CREACION
+        ) VALUES (
+                     #{iAutoDescripcionId},
+                     #{iAutoModeloClave},
+                     #{vNombre},
+                     #{dFechaCreacion},
+                     #{iUsuarioCreacion}
+                 )
+    </insert>
+
+    <select id="obtenerAutoDescripcion" resultMap="AutoDescripcionResultMap" parameterType="java.math.BigDecimal">
+        SELECT * FROM C##MULTICOTIZADOR.T_AUTOS_DESCRIPCION_MC
+        WHERE I_AUTO_DESCRIPCION_ID = #{id}
+    </select>
+
+    <update id="actualizarAutoDescripcion" parameterType="com.qualitas.portal.fraudes.account.domain.model.AutoDescripcion">
+        UPDATE C##MULTICOTIZADOR.T_AUTOS_DESCRIPCION_MC
+        SET
+            I_AUTO_MODELO_CLAVE = #{iAutoModeloClave},
+            V_NOMBRE = #{vNombre},
+            D_FECHA_CREACION = #{dFechaCreacion},
+            I_USUARIO_CREACION = #{iUsuarioCreacion}
+        WHERE I_AUTO_DESCRIPCION_ID = #{iAutoDescripcionId}
+    </update>
+
+    <select id="listarAutoDescripcion" resultMap="AutoDescripcionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.T_AUTOS_DESCRIPCION_MC
+    </select>
+
+    <delete id="eliminarAutoDescripcion" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.T_AUTOS_DESCRIPCION_MC
+        WHERE I_AUTO_DESCRIPCION_ID = #{id}
+    </delete>
+
+</mapper>

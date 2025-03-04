@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CategoriaVehiculoDao">
+
+    <resultMap id="CategoriaVehiculoResultMap" type="com.qualitas.portal.fraudes.account.domain.model.CategoriaVehiculo">
+        <id property="lCategoriaVehiculoId" column="L_CATEGORIA_VEHICULO_ID" />
+        <result property="vNombre" column="V_NOMBRE" />
+        <result property="dFechaCreacion" column="D_FECHA_CREACION" />
+    </resultMap>
+
+    <insert id="crearCategoriaVehiculo" parameterType="com.qualitas.portal.fraudes.account.domain.model.CategoriaVehiculo">
+        INSERT INTO C##MULTICOTIZADOR.T_CATEGORIA_VEHICULOS_MC (
+            L_CATEGORIA_VEHICULO_ID,
+            V_NOMBRE,
+            D_FECHA_CREACION
+        ) VALUES (
+                     #{lCategoriaVehiculoId},
+                     #{vNombre},
+                     #{dFechaCreacion}
+                 )
+    </insert>
+
+    <select id="obtenerCategoriaVehiculo" resultMap="CategoriaVehiculoResultMap" parameterType="java.math.BigDecimal">
+        SELECT * FROM C##MULTICOTIZADOR.T_CATEGORIA_VEHICULOS_MC
+        WHERE L_CATEGORIA_VEHICULO_ID = #{id}
+    </select>
+
+    <update id="actualizarCategoriaVehiculo" parameterType="com.qualitas.portal.fraudes.account.domain.model.CategoriaVehiculo">
+        UPDATE C##MULTICOTIZADOR.T_CATEGORIA_VEHICULOS_MC
+        SET
+            V_NOMBRE = #{vNombre},
+            D_FECHA_CREACION = #{dFechaCreacion}
+        WHERE L_CATEGORIA_VEHICULO_ID = #{lCategoriaVehiculoId}
+    </update>
+
+    <select id="listarCategoriasVehiculo" resultMap="CategoriaVehiculoResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.T_CATEGORIA_VEHICULOS_MC
+    </select>
+
+    <delete id="eliminarCategoriaVehiculo" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.T_CATEGORIA_VEHICULOS_MC
+        WHERE L_CATEGORIA_VEHICULO_ID = #{id}
+    </delete>
+
+</mapper>

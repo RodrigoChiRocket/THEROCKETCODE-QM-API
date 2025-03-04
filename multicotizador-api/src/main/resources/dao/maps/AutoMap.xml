@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.Infrastructure.dao.AutoDao">
+
+
+    <insert id="crearAuto" useGeneratedKeys="true" keyProperty="iAutoId">
+        INSERT INTO T_AUTOS_MC (
+        D_AÑO,
+        D_FECHA_CREACION,
+        LUSUARIO_CREACION,
+        I_AUTO_MARCA_ID,
+        I_AUTO_MODELO_ID,
+        I_AUTO_DESCRIPCION_ID
+        )
+        VALUES (
+        #{dAno},
+        #{dFechaCreacion},
+        #{iUsuarioCreacion, jdbcType=NUMERIC},
+        #{iAutoMarcaClave, jdbcType=NUMERIC},
+        #{iAutoModeloClave, jdbcType=INTEGER},
+        #{iAutoDescripcionClave, jdbcType=NUMERIC}
+        )
+        <selectKey keyProperty="iAutoId" resultType="BigDecimal" order="AFTER">
+            SELECT SEQ_AUTO_ID_MC.CURRVAL FROM dual
+        </selectKey>
+    </insert>
+
+    <!--
+    <insert id="crearAuto" useGeneratedKeys="true" keyProperty="iAutoId">
+        INSERT INTO T_AUTOS_MC ( D_AÑO, D_FECHA_CREACION, LUSUARIO_CREACION AS I_USUARIO_CREACION, I_AUTO_MARCA_ID, I_AUTO_MODELO_ID, I_AUTO_DESCRIPCION_ID )
+        VALUES ( #{dAno}, #{dFechaCreacion}, #{iUsuarioCreacion}, #{iAutoMarcaClave}, #{iAutoModeloClave, jdbcType=INTEGER}, #{iAutoDescripcionClave} )
+
+
+    </insert>
+-->
+
+    <!-- Selecciona un auto por ID -->
+    <select id="obtenerAuto" resultMap="AutoResultado">
+        SELECT
+            I_AUTO_ID,
+            D_AÑO,
+            D_FECHA_CREACION,
+            LUSUARIO_CREACION,
+            I_AUTO_MARCA_ID,
+            I_AUTO_MODELO_ID,
+            I_AUTO_DESCRIPCION_ID
+        FROM T_AUTOS_MC
+        WHERE I_AUTO_ID = #{id}
+    </select>
+
+    <!-- ResultMap para mapear el resultado de la base de datos al modelo -->
+    <resultMap id="AutoResultado" type="com.qualitas.portal.fraudes.account.domain.model.Auto">
+        <id property="iAutoId" column="I_AUTO_ID"/>
+        <result property="dAno" column="D_AÑO"/>
+        <result property="dFechaCreacion" column="D_FECHA_CREACION"/>
+        <result property="iUsuarioCreacion" column="LUSUARIO_CREACION"/>
+        <result property="iAutoMarcaClave" column="I_AUTO_MARCA_ID"/>
+        <result property="iAutoModeloClave" column="I_AUTO_MODELO_ID"/>
+        <result property="iAutoDescripcionClave" column="I_AUTO_DESCRIPCION_ID"/>
+    </resultMap>
+
+    <!-- Actualiza un auto -->
+    <update id="actualizarAuto" parameterType="com.qualitas.portal.fraudes.account.domain.model.Auto">
+        UPDATE T_AUTOS_MC
+        SET
+            D_AÑO = #{dAno},
+            D_FECHA_CREACION = #{dFechaCreacion},
+            LUSUARIO_CREACION = #{iUsuarioCreacion},
+            I_AUTO_MARCA_ID = #{iAutoMarcaClave},
+            I_AUTO_MODELO_ID = #{iAutoModeloClave},
+            I_AUTO_DESCRIPCION_ID = #{iAutoDescripcionClave}
+        WHERE I_AUTO_ID = #{iAutoId}
+    </update>
+
+    <!-- Lista todos los autos -->
+    <select id="listarAuto" resultMap="AutoResultado">
+        SELECT
+            I_AUTO_ID,
+            D_AÑO,
+            D_FECHA_CREACION,
+            LUSUARIO_CREACION,
+            I_AUTO_MARCA_ID,
+            I_AUTO_MODELO_ID,
+            I_AUTO_DESCRIPCION_ID
+        FROM T_AUTOS_MC
+    </select>
+
+    <!-- Elimina un auto por ID -->
+    <delete id="eliminarAuto">
+        DELETE FROM T_AUTOS_MC
+        WHERE I_AUTO_ID = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="UsoDao">
+
+    <resultMap id="UsoResultMap" type="com.qualitas.portal.fraudes.account.domain.model.Uso">
+        <id property="iUsoId" column="I_USO_ID" />
+        <result property="vNombre" column="V_NOMBRE" />
+        <result property="dFechaCreacion" column="D_FECHA_CREACION" />
+    </resultMap>
+
+    <insert id="crearUso" parameterType="com.qualitas.portal.fraudes.account.domain.model.Uso">
+        INSERT INTO C##MULTICOTIZADOR.T_USOS_MC (
+            I_USO_ID,
+            V_NOMBRE,
+            D_FECHA_CREACION
+        ) VALUES (
+                     #{iUsoId},
+                     #{vNombre},
+                     #{dFechaCreacion}
+                 )
+    </insert>
+
+    <select id="obtenerUso" resultMap="UsoResultMap" parameterType="java.math.BigDecimal">
+        SELECT * FROM C##MULTICOTIZADOR.T_USOS_MC
+        WHERE I_USO_ID = #{id}
+    </select>
+
+    <update id="actualizarUso" parameterType="com.qualitas.portal.fraudes.account.domain.model.Uso">
+        UPDATE C##MULTICOTIZADOR.T_USOS_MC
+        SET
+            V_NOMBRE = #{vNombre},
+            D_FECHA_CREACION = #{dFechaCreacion}
+        WHERE I_USO_ID = #{iUsoId}
+    </update>
+
+    <select id="listarUsos" resultMap="UsoResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.T_USOS_MC
+    </select>
+
+    <delete id="eliminarUso" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.T_USOS_MC
+        WHERE I_USO_ID = #{id}
+    </delete>
+
+</mapper>

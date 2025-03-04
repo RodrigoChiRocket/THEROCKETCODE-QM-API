@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TipoAutoDao">
+
+    <resultMap id="TipoAutoResultMap" type="com.qualitas.portal.fraudes.account.domain.model.TipoAuto">
+        <id property="lTipoAutoId" column="L_TIPO_AUTO_ID" />
+        <result property="vNombre" column="V_NOMBRE" />
+        <result property="dFechaCreacion" column="D_FECHA_CREACION" />
+        <result property="lUsuarioCreacion" column="L_USUARIO_CREACION" />
+    </resultMap>
+
+    <insert id="crearTipoAuto" parameterType="com.qualitas.portal.fraudes.account.domain.model.TipoAuto">
+        INSERT INTO C##MULTICOTIZADOR.T_TIPOS_AUTOS_FR_MC (
+            L_TIPO_AUTO_ID,
+            V_NOMBRE,
+            D_FECHA_CREACION,
+            L_USUARIO_CREACION
+        ) VALUES (
+                     #{lTipoAutoId},
+                     #{vNombre},
+                     #{dFechaCreacion},
+                     #{lUsuarioCreacion}
+                 )
+    </insert>
+
+    <select id="obtenerTipoAuto" resultMap="TipoAutoResultMap" parameterType="java.math.BigDecimal">
+        SELECT * FROM C##MULTICOTIZADOR.T_TIPOS_AUTOS_FR_MC
+        WHERE L_TIPO_AUTO_ID = #{id}
+    </select>
+
+    <update id="actualizarTipoAuto" parameterType="com.qualitas.portal.fraudes.account.domain.model.TipoAuto">
+        UPDATE C##MULTICOTIZADOR.T_TIPOS_AUTOS_FR_MC
+        SET
+            V_NOMBRE = #{vNombre},
+            D_FECHA_CREACION = #{dFechaCreacion},
+            L_USUARIO_CREACION = #{lUsuarioCreacion}
+        WHERE L_TIPO_AUTO_ID = #{lTipoAutoId}
+    </update>
+
+    <select id="listarTiposAuto" resultMap="TipoAutoResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.T_TIPOS_AUTOS_FR_MC
+    </select>
+
+    <delete id="eliminarTipoAuto" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.T_TIPOS_AUTOS_FR_MC
+        WHERE L_TIPO_AUTO_ID = #{id}
+    </delete>
+
+</mapper>

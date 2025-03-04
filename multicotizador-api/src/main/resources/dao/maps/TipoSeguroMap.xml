@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TipoSeguroDao">
+
+    <resultMap id="TipoSeguroResultMap" type="com.qualitas.portal.fraudes.account.domain.model.TipoSeguro">
+        <id property="lTipoSeguroId" column="L_TIPO_SEGURO_ID" />
+        <result property="vNombre" column="V_NOMBRE" />
+        <result property="dFechaCreacion" column="D_FECHA_CREACION" />
+        <result property="lUsuarioCreacion" column="L_USUARIO_CREACION" />
+    </resultMap>
+
+    <insert id="crearTipoSeguro" parameterType="com.qualitas.portal.fraudes.account.domain.model.TipoSeguro">
+        INSERT INTO C##MULTICOTIZADOR.T_TIPOS_SEGUROS_MC (
+            L_TIPO_SEGURO_ID,
+            V_NOMBRE,
+            D_FECHA_CREACION,
+            L_USUARIO_CREACION
+        ) VALUES (
+                     #{lTipoSeguroId},
+                     #{vNombre},
+                     #{dFechaCreacion},
+                     #{lUsuarioCreacion}
+                 )
+    </insert>
+
+    <select id="obtenerTipoSeguro" resultMap="TipoSeguroResultMap" parameterType="java.math.BigDecimal">
+        SELECT * FROM C##MULTICOTIZADOR.T_TIPOS_SEGUROS_MC
+        WHERE L_TIPO_SEGURO_ID = #{id}
+    </select>
+
+    <update id="actualizarTipoSeguro" parameterType="com.qualitas.portal.fraudes.account.domain.model.TipoSeguro">
+        UPDATE C##MULTICOTIZADOR.T_TIPOS_SEGUROS_MC
+        SET
+            V_NOMBRE = #{vNombre},
+            D_FECHA_CREACION = #{dFechaCreacion},
+            L_USUARIO_CREACION = #{lUsuarioCreacion}
+        WHERE L_TIPO_SEGURO_ID = #{lTipoSeguroId}
+    </update>
+
+    <select id="listarTiposSeguro" resultMap="TipoSeguroResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.T_TIPOS_SEGUROS_MC
+    </select>
+
+    <delete id="eliminarTipoSeguro" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.T_TIPOS_SEGUROS_MC
+        WHERE L_TIPO_SEGURO_ID = #{id}
+    </delete>
+
+</mapper>
