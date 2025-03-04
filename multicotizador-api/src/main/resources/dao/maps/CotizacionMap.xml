@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.infrastructure.dao.CotizacionDao">
+
+    <!-- Mapeo de la entidad Cotizacion -->
+    <resultMap id="CotizacionResultMap" type="com.qualitas.portal.fraudes.account.domain.model.Cotizacion">
+        <id property="iCotizacionId" column="I_COTIZACION_ID"/>
+        <result property="iCategoriaVehiculoClave" column="I_CATEGORIA_VEHICULO_CLAVE"/>
+        <result property="iTipoSeguroClave" column="I_TIPO_SEGURO_CLAVE"/>
+        <result property="iUsoClave" column="I_USO_CLAVE"/>
+        <result property="iTipoAutoClave" column="I_TIPO_AUTO_CLAVE"/>
+        <result property="iAutoClave" column="I_AUTO_CLAVE"/>
+        <result property="iPersonaClave" column="I_PERSONA_CLAVE"/>
+        <result property="dFechaCreacion" column="D_FECHA_CREACION"/>
+        <result property="iUsuarioCreacion" column="I_USUARIO_CREACION"/>
+    </resultMap>
+
+    <!-- Insertar una nueva cotización -->
+    <insert id="crearCotizacion" parameterType="com.qualitas.portal.fraudes.account.domain.model.Cotizacion">
+        INSERT INTO C##MULTICOTIZADOR.T_COTIZACION_FR_MC (
+        I_CATEGORIA_VEHICULO_CLAVE,
+        I_TIPO_SEGURO_CLAVE,
+        I_USO_CLAVE,
+        I_TIPO_AUTO_CLAVE,
+        I_AUTO_CLAVE,
+        I_PERSONA_CLAVE,
+        D_FECHA_CREACION,
+        I_USUARIO_CREACION
+        ) VALUES (
+        #{iCategoriaVehiculoClave, jdbcType=NUMERIC},
+        #{iTipoSeguroClave, jdbcType=NUMERIC},
+        #{iUsoClave, jdbcType=NUMERIC},
+        #{iTipoAutoClave, jdbcType=NUMERIC},
+        #{iAutoClave, jdbcType=NUMERIC},
+        #{iPersonaClave, jdbcType=NUMERIC},
+        #{dFechaCreacion, jdbcType=DATE},
+        #{iUsuarioCreacion, jdbcType=VARCHAR}
+        )
+        <selectKey keyProperty="iCotizacionId" resultType="java.math.BigDecimal" order="AFTER">
+            SELECT SEQ_COTIZACION_ID_MC.CURRVAL FROM dual
+        </selectKey>
+    </insert>
+
+    <!-- Obtener una cotización por ID -->
+    <select id="obtenerCotizacionPorId" parameterType="java.math.BigDecimal" resultMap="CotizacionResultMap">
+        SELECT I_COTIZACION_ID,
+               I_CATEGORIA_VEHICULO_CLAVE,
+               I_TIPO_SEGURO_CLAVE,
+               I_USO_CLAVE,
+               I_TIPO_AUTO_CLAVE,
+               I_AUTO_CLAVE,
+               I_PERSONA_CLAVE,
+               D_FECHA_CREACION,
+               I_USUARIO_CREACION
+        FROM C##MULTICOTIZADOR.T_COTIZACION_FR_MC
+        WHERE I_COTIZACION_ID = #{id}
+    </select>
+
+    <!-- Actualizar una cotización -->
+    <update id="actualizarCotizacion" parameterType="com.qualitas.portal.fraudes.account.domain.model.Cotizacion">
+        UPDATE C##MULTICOTIZADOR.T_COTIZACION_FR_MC
+        SET I_CATEGORIA_VEHICULO_CLAVE = #{iCategoriaVehiculoClave},
+            I_TIPO_SEGURO_CLAVE = #{iTipoSeguroClave},
+            I_USO_CLAVE = #{iUsoClave},
+            I_TIPO_AUTO_CLAVE = #{iTipoAutoClave},
+            I_AUTO_CLAVE = #{iAutoClave},
+            I_PERSONA_CLAVE = #{iPersonaClave},
+            D_FECHA_CREACION = #{dFechaCreacion},
+            I_USUARIO_CREACION = #{iUsuarioCreacion}
+        WHERE I_COTIZACION_ID = #{iCotizacionId}
+    </update>
+
+    <!-- Eliminar una cotización -->
+    <delete id="eliminarCotizacion" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.T_COTIZACION_FR_MC
+        WHERE I_COTIZACION_ID = #{id}
+    </delete>
+
+    <!-- Listar todas las cotizaciones -->
+    <select id="listarTodasLasCotizaciones" resultMap="CotizacionResultMap">
+        SELECT I_COTIZACION_ID,
+               I_CATEGORIA_VEHICULO_CLAVE,
+               I_TIPO_SEGURO_CLAVE,
+               I_USO_CLAVE,
+               I_TIPO_AUTO_CLAVE,
+               I_AUTO_CLAVE,
+               I_PERSONA_CLAVE,
+               D_FECHA_CREACION,
+               I_USUARIO_CREACION
+        FROM C##MULTICOTIZADOR.T_COTIZACION_FR_MC
+    </select>
+
+</mapper>
