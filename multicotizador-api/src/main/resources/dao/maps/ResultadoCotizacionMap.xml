@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.infrastructure.dao.ResultadoCotizacionDao">
+
+    <!-- Mapeo de la tabla RESULTADO_COTIZACION al modelo ResultadoCotizacion -->
+    <resultMap id="ResultadoCotizacionResultMap" type="com.qualitas.portal.fraudes.account.domain.model.ResultadoCotizacion">
+        <id property="iResultadoCotizacionId" column="I_RESULTADO_COTIZACION_ID"/>
+        <result property="iCotizacionClave" column="I_COTIZACION_CLAVE"/>
+        <result property="vNombreSeguro" column="V_NOMBRE_SEGURO"/>
+        <result property="vNombreCobertura" column="V_NOMBRE_COBERTURA"/>
+        <result property="dPrecioTotal" column="D_PRECIO_TOTAL"/>
+        <result property="vPlazoCobertura" column="V_PLAZO_COBERTURA"/>
+        <result property="dPrimerPago" column="D_PRIMER_PAGO"/>
+        <result property="dPagosResta" column="D_PAGOS_RESTA"/>
+        <result property="iVigencia" column="I_VIGENCIA"/>
+        <result property="dDanosTerceros" column="D_DANOS_TERCEROS"/>
+        <result property="iRoboTotal" column="I_ROBO_TOTAL"/>
+        <result property="iRoboParcial" column="I_ROBO_PARCIAL"/>
+        <result property="dGastosMedicos" column="D_GASTOS_MEDICOS"/>
+        <result property="iDanosLlanta" column="I_DANOS_LLANTA"/>
+        <result property="iDanoCristal" column="I_DANO_CRISTAL"/>
+        <result property="iReposicionLlave" column="I_REPOSICION_LLAVE"/>
+        <result property="bPerdidaTotal" column="B_PERDIDA_TOTAL"/>
+        <result property="dFallecimiento" column="D_FALLECIMENTO"/>
+        <result property="bDefensaLegal" column="B_DEFENSA_LEGAL"/>
+        <result property="bAsistencialVialCarretera" column="B_ASISTENCIAL_VIAL_CARRETERA"/>
+        <result property="iDanoVehiculo" column="I_DANO_VEHICULO"/>
+    </resultMap>
+
+    <!-- Consulta para crear un ResultadoCotizacion -->
+    <insert id="crearResultadoCotizacion" parameterType="com.qualitas.portal.fraudes.account.domain.model.ResultadoCotizacion" useGeneratedKeys="true" keyProperty="iResultadoCotizacionId">
+        INSERT INTO C##MULTICOTIZADOR.RESULTADO_COTIZACION (
+        I_COTIZACION_CLAVE, V_NOMBRE_SEGURO, V_NOMBRE_COBERTURA, D_PRECIO_TOTAL, V_PLAZO_COBERTURA,
+        D_PRIMER_PAGO, D_PAGOS_RESTA, I_VIGENCIA, D_DANOS_TERCEROS, I_ROBO_TOTAL, I_ROBO_PARCIAL,
+        D_GASTOS_MEDICOS, I_DANOS_LLANTA, I_DANO_CRISTAL, I_REPOSICION_LLAVE, B_PERDIDA_TOTAL,
+        D_FALLECIMENTO, B_DEFENSA_LEGAL, B_ASISTENCIAL_VIAL_CARRETERA, I_DANO_VEHICULO
+        ) VALUES (
+        #{iCotizacionClave}, #{vNombreSeguro}, #{vNombreCobertura}, #{dPrecioTotal}, #{vPlazoCobertura},
+        #{dPrimerPago}, #{dPagosResta}, #{iVigencia}, #{dDanosTerceros}, #{iRoboTotal}, #{iRoboParcial},
+        #{dGastosMedicos}, #{iDanosLlanta}, #{iDanoCristal}, #{iReposicionLlave}, #{bPerdidaTotal},
+        #{dFallecimiento}, #{bDefensaLegal}, #{bAsistencialVialCarretera}, #{iDanoVehiculo}
+        )
+        <selectKey keyProperty="iResultadoCotizacionId" resultType="BigDecimal" order="AFTER">
+            SELECT SEQ_RESULTADO_COTIZACION_ID.CURRVAL FROM dual
+        </selectKey>
+    </insert>
+
+    <!-- Consulta para obtener un ResultadoCotizacion por ID -->
+    <select id="obtenerResultadoCotizacion" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_RESULTADO_COTIZACION_ID = #{id}
+    </select>
+
+    <!-- Consulta para actualizar un ResultadoCotizacion -->
+    <update id="actualizarResultadoCotizacion" parameterType="com.qualitas.portal.fraudes.account.domain.model.ResultadoCotizacion">
+        UPDATE C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        SET
+            I_COTIZACION_CLAVE = #{iCotizacionClave},
+            V_NOMBRE_SEGURO = #{vNombreSeguro},
+            V_NOMBRE_COBERTURA = #{vNombreCobertura},
+            D_PRECIO_TOTAL = #{dPrecioTotal},
+            V_PLAZO_COBERTURA = #{vPlazoCobertura},
+            D_PRIMER_PAGO = #{dPrimerPago},
+            D_PAGOS_RESTA = #{dPagosResta},
+            I_VIGENCIA = #{iVigencia},
+            D_DANOS_TERCEROS = #{dDanosTerceros},
+            I_ROBO_TOTAL = #{iRoboTotal},
+            I_ROBO_PARCIAL = #{iRoboParcial},
+            D_GASTOS_MEDICOS = #{dGastosMedicos},
+            I_DANOS_LLANTA = #{iDanosLlanta},
+            I_DANO_CRISTAL = #{iDanoCristal},
+            I_REPOSICION_LLAVE = #{iReposicionLlave},
+            B_PERDIDA_TOTAL = #{bPerdidaTotal},
+            D_FALLECIMENTO = #{dFallecimiento},
+            B_DEFENSA_LEGAL = #{bDefensaLegal},
+            B_ASISTENCIAL_VIAL_CARRETERA = #{bAsistencialVialCarretera},
+            I_DANO_VEHICULO = #{iDanoVehiculo},
+            D_FECHA_CREACION = #{dFechaCreacion}
+        WHERE I_RESULTADO_COTIZACION_ID = #{iResultadoCotizacionId}
+    </update>
+
+    <!-- Consulta para listar todos los ResultadoCotizacion -->
+    <select id="listarResultadosCotizacion" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+    </select>
+
+    <!-- Consulta para eliminar un ResultadoCotizacion por ID -->
+    <delete id="eliminarResultadoCotizacion" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_RESULTADO_COTIZACION_ID = #{id}
+    </delete>
+
+    <select id="obtenerResultadoPorCotizacionClave" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+    </select>
+
+    <select id="buscarPorNombreSeguroYCotizacionClave" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE V_NOMBRE_SEGURO = #{nombreSeguro}
+          AND I_COTIZACION_CLAVE = #{cotizacionClave}
+    </select>
+
+    <select id="obtenerNombresSegurosUnicos" resultType="java.lang.String">
+        SELECT DISTINCT V_NOMBRE_SEGURO
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+    </select>
+</mapper>
