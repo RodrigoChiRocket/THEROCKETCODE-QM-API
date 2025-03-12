@@ -106,4 +106,16 @@
         SELECT DISTINCT V_NOMBRE_SEGURO
         FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
     </select>
+
+
+
+    <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
+        SELECT CASE
+                   WHEN COUNT(DISTINCT V_NOMBRE_SEGURO) = 4 THEN 1
+                   ELSE 0
+                   END
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+          AND V_NOMBRE_SEGURO IN ('GNP', 'AXA', 'Chubb', 'Mapfre')
+    </select>
 </mapper>

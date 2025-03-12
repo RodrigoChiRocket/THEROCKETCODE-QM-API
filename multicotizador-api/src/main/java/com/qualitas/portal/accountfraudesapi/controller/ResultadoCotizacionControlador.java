@@ -40,11 +40,6 @@ public class ResultadoCotizacionControlador {
     public ResponseEntity<ResultadoCotizacionDTO> obtenerResultadoCotizacion(@PathVariable BigDecimal id) {
         logger.info("Recibiendo solicitud para obtener resultado de cotización con ID: {}", id);
         ResultadoCotizacionDTO resultadoDTO = resultadoCotizacionService.obtenerResultadoCotizacion(id);
-        if (resultadoDTO != null) {
-            logger.info("Resultado de cotización encontrado: {}", resultadoDTO);
-        } else {
-            logger.warn("No se encontró resultado de cotización con ID: {}", id);
-        }
         return ResponseEntity.ok(resultadoDTO);
     }
 
@@ -73,13 +68,7 @@ public class ResultadoCotizacionControlador {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/verificar-datos")
-    public ResponseEntity<Boolean> verificarExistenciaDeDatos() {
-        logger.info("Recibiendo solicitud para verificar existencia de datos");
-        boolean existenDatos = resultadoCotizacionService.verificarExistenciaDeDatos();
-        logger.info("Existencia de datos: {}", existenDatos);
-        return ResponseEntity.ok(existenDatos);
-    }
+
     @GetMapping("/por-cotizacion-clave/{cotizacionClave}")
     public ResponseEntity<List<ResultadoCotizacionDTO>> obtenerResultadoPorCotizacionClave(@PathVariable BigDecimal cotizacionClave) {
         logger.info("Recibiendo solicitud para obtener resultado de cotización por clave: {}", cotizacionClave);
@@ -110,6 +99,14 @@ public class ResultadoCotizacionControlador {
             logger.warn("No se encontraron resultados para clave de cotización: {} y nombre de seguro: {}", cotizacionClave, nombreSeguro);
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/verificar-estado/{cotizacionClave}")
+    public ResponseEntity<Boolean> verificarEstadoCotizacion(@PathVariable BigDecimal cotizacionClave) {
+        logger.info("Recibiendo solicitud para verificar estado de cotización con clave: {}", cotizacionClave);
+        boolean resultado = resultadoCotizacionService.verificarEstadoCotizacion(cotizacionClave);
+        logger.info("Resultado de verificación: {}", resultado);
+        return ResponseEntity.ok(resultado);
     }
 
 
