@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/resultados-cotizacion")
 public class ResultadoCotizacionControlador {
 

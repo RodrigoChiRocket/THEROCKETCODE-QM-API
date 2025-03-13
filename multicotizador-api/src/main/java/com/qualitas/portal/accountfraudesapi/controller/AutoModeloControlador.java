@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/automodelo")
+@CrossOrigin(origins = "*")
 public class AutoModeloControlador {
 
     private static final Logger logger = LoggerFactory.getLogger(AutoModeloControlador.class);

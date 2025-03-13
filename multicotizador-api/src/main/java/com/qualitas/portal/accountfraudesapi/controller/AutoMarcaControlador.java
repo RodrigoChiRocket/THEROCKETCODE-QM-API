@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("automarca")
+@CrossOrigin(origins = "*")
 public class AutoMarcaControlador {
 
 
