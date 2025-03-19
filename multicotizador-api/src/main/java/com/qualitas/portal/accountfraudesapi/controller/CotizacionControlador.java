@@ -7,12 +7,16 @@ import com.qualitas.portal.fraudes.account.application.service.CotizacionService
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -28,6 +32,43 @@ public class CotizacionControlador {
     public ResponseEntity<CotizacionCompletaResponseDTO> crearCotizacionCompleta(@RequestBody CotizacionCompletaDTO cotizacionCompletaDTO) {
         logger.info("Creando cotización completa con los datos: {}", cotizacionCompletaDTO);
         CotizacionCompletaResponseDTO responseDTO = cotizacionService.crearCotizacionCompleta(cotizacionCompletaDTO);
+
+        // Crear un ScheduledExecutorService con un solo hilo
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        AtomicInteger contador = new AtomicInteger();
+        // Ejecutar la petición HTTP en otro hilo después de un pequeño retraso
+        executorService.schedule(() -> {
+            try {
+                contador.getAndIncrement();
+                System.out.println("Enviando petición HTTP a Multicotizador API: " + contador.get());
+                // Create RestTemplate
+                RestTemplate restTemplate = new RestTemplate();
+                String url = "http://localhost:8000/multicotizador-api/cotizacion/completa";
+
+                // Create request headers
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+
+                // Create request entity with headers and body
+                HttpEntity<CotizacionCompletaResponseDTO> request = new HttpEntity<>(responseDTO, headers);
+
+                // Send POST request
+                ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+                // Handle response
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    logger.info("Response: " + response.getBody());
+                } else {
+                    logger.error("Request failed with status code: " + response.getStatusCode());
+                }
+            } catch (Exception e) {
+                logger.error("Error al enviar petición HTTP", e);
+            } finally {
+                executorService.shutdown();
+            }
+        }, 1, TimeUnit.SECONDS);
+
+        // Retornar inmediatamente sin esperar la respuesta HTTP
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
