@@ -92,8 +92,10 @@
     </delete>
 
     <select id="obtenerResultadoPorCotizacionClave" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
-        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        SELECT *
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+          AND (V_NOMBRE_SEGURO != 'Completado')
     </select>
 
     <select id="buscarPorNombreSeguroYCotizacionClave" resultMap="ResultadoCotizacionResultMap">
@@ -108,8 +110,29 @@
     </select>
 
 
+    <select id="filtrarResultadosCotizacion" parameterType="map" resultMap="ResultadoCotizacionResultMap">
+        SELECT *
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE 1 = 1
+        <!-- Filtro por clave de cotización -->
+        <if test="cotizacionClave != null">
+            AND I_COTIZACION_CLAVE = #{cotizacionClave}
+        </if>
+        <!-- Excluir registros con V_NOMBRE_SEGURO = 'Completado' o 'Error' -->
+        AND V_NOMBRE_SEGURO NOT IN ('Completado', 'Error')
+        <!-- Filtro por nombre de seguro -->
+        <if test="vNombreSeguro != null and vNombreSeguro != ''">
+            AND V_NOMBRE_SEGURO = #{vNombreSeguro}
+        </if>
+        <!-- Filtro por nombre de cobertura -->
+        <if test="vNombreCobertura != null and vNombreCobertura != ''">
+            AND V_NOMBRE_COBERTURA = #{vNombreCobertura}
+        </if>
+    </select>
 
-    <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
+
+
+    <!-- <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
         SELECT CASE
                    WHEN COUNT(DISTINCT V_NOMBRE_SEGURO) = 4 THEN 1
                    ELSE 0
@@ -117,5 +140,18 @@
         FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
           AND V_NOMBRE_SEGURO IN ('GNP', 'AXA', 'Chubb', 'Mapfre')
+    </select>-->
+
+
+    <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
+        SELECT CASE
+                   WHEN COUNT(*) > 0 THEN 1
+                   ELSE 0
+                   END
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+          AND V_NOMBRE_SEGURO = 'Completado'
     </select>
+
+
 </mapper>

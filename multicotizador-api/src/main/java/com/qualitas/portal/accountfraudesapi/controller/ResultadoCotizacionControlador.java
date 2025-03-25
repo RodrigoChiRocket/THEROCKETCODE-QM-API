@@ -110,7 +110,25 @@ public class ResultadoCotizacionControlador {
         return ResponseEntity.ok(resultado);
     }
 
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<ResultadoCotizacionDTO>> filtrarResultadosCotizacion(
+            @RequestParam(required = false) BigDecimal cotizacionClave,
+            @RequestParam(required = false) String nombreSeguro,
+            @RequestParam(required = false) String nombreCobertura) {
+        logger.info("Recibiendo solicitud para filtrar resultados de cotización. Clave: {}, Seguro: {}, Cobertura: {}",
+                cotizacionClave, nombreSeguro, nombreCobertura);
 
+        List<ResultadoCotizacionDTO> resultados = resultadoCotizacionService.filtrarResultadosCotizacion(
+                cotizacionClave, nombreSeguro, nombreCobertura);
+
+        if (!resultados.isEmpty()) {
+            logger.info("Resultados encontrados: {}", resultados);
+            return ResponseEntity.ok(resultados);
+        } else {
+            logger.warn("No se encontraron resultados con los filtros proporcionados");
+            return ResponseEntity.notFound().build();
+        }
+    }
     
 
 }
