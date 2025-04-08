@@ -19,13 +19,20 @@
         </selectKey>
     </insert>
 
+    <select id="obtenerAutoModeloPorNombre" resultMap="AutoModeloResultado" parameterType="java.lang.String">
+        SELECT
+            I_AUTO_MODELO_ID,
+            I_AUTO_MARCA_CLAVE,
+            V_NOMBRE
+        FROM T_AUTOS_MODELO_MC WHERE V_NOMBRE = #{vNombre, jdbcType=VARCHAR}
+    </select>
+
     <!-- Selecciona un modelo de auto por ID -->
     <select id="obtenerAutoModelo" resultMap="AutoModeloResultado">
         SELECT
             I_AUTO_MODELO_ID,
             I_AUTO_MARCA_CLAVE,
-            V_NOMBRE,
-            D_FECHA_CREACION
+            V_NOMBRE
         FROM T_AUTOS_MODELO_MC
         WHERE I_AUTO_MODELO_ID = #{iAutoModeloId}
     </select>

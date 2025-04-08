@@ -25,6 +25,7 @@ public class TipoSeguroControlador {
         return tipoSeguroService.obtenerTipoSeguro(id);
     }
 
+
     @PutMapping("/{id}")
     public TipoSeguroDTO actualizarTipoSeguro(@PathVariable BigDecimal id, @RequestBody TipoSeguroDTO tipoSeguroDTO) {
         return tipoSeguroService.actualizarTipoSeguro(id, tipoSeguroDTO);

@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="TipoAutoDao">
+<mapper namespace="com.qualitas.portal.fraudes.account.Infrastructure.dao.TipoAutoDao">
 
     <resultMap id="TipoAutoResultMap" type="com.qualitas.portal.fraudes.account.domain.model.TipoAuto">
         <id property="lTipoAutoId" column="L_TIPO_AUTO_ID" />
@@ -25,6 +25,12 @@
                      #{lUsuarioCreacion}
                  )
     </insert>
+
+    <select id="obtenerTipoAutoPorNombre" resultMap="TipoAutoResultMap" parameterType="java.lang.String">
+        SELECT * FROM C##MULTICOTIZADOR.T_TIPOS_AUTOS_FR_MC
+        WHERE V_NOMBRE = #{vNombre}
+    </select>
+
 
     <select id="obtenerTipoAuto" resultMap="TipoAutoResultMap" parameterType="java.math.BigDecimal">
         SELECT * FROM C##MULTICOTIZADOR.T_TIPOS_AUTOS_FR_MC

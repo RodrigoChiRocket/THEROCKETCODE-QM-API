@@ -1,6 +1,7 @@
 package com.qualitas.portal.accountfraudesapi.controller;
 
 
+import com.qualitas.portal.fraudes.account.domain.model.Uso;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.qualitas.portal.fraudes.account.application.dto.UsoDTO;
 import com.qualitas.portal.fraudes.account.application.service.UsoService;
@@ -25,6 +26,11 @@ public class UsoControlador {
     @GetMapping("/{id}")
     public UsoDTO obtenerUso(@PathVariable BigDecimal id) {
         return usoService.obtenerUso(id);
+    }
+
+    @GetMapping("/por-nombre")
+    public Uso obtenerUsoPorNombre() {
+        return usoService.obtenerUsoPorNombre("NA");
     }
 
     @PutMapping("/{id}")

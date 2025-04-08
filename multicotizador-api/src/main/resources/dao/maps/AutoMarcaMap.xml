@@ -16,6 +16,12 @@
         VALUES (#{iAutoMarcaId}, #{vNombre}, #{dFechaCreacion})
     </insert>
 
+
+
+    <select id="obtenerAutoMarcaPorNombre" resultMap="AutoMarcaResultMap" parameterType="java.lang.String">
+        SELECT * FROM C##MULTICOTIZADOR.T_AUTOS_MARCA_MC WHERE V_NOMBRE = #{vNombre, jdbcType=VARCHAR}
+    </select>
+
     <select id="obtenerAutoMarca" resultMap="AutoMarcaResultMap" parameterType="java.math.BigDecimal">
         SELECT * FROM C##MULTICOTIZADOR.T_AUTOS_MARCA_MC WHERE I_AUTO_MARCA_ID = #{id}
     </select>

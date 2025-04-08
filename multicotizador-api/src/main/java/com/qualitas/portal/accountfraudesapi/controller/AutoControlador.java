@@ -40,10 +40,25 @@ public class AutoControlador {
 
     // Actualizar Auto
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizarAuto(@PathVariable BigDecimal id, @RequestBody AutoDTO requestDTO) {
-        logger.info("Actualizando auto con ID: {}", id);
-        autoService.actualizarAuto(id, requestDTO);
-        return new ResponseEntity<>("Auto actualizado con éxito", HttpStatus.OK);
+    public ResponseEntity<?> actualizarAuto(@PathVariable BigDecimal id, @RequestBody AutoDTO requestDTO) {
+        try {
+            logger.info("Actualizando auto con ID: {}", id);
+
+            // Validación básica
+            if (requestDTO == null) {
+                return ResponseEntity.badRequest().body("El cuerpo de la solicitud no puede estar vacío");
+            }
+
+            AutoDTO autoActualizado = autoService.actualizarAuto(id, requestDTO);
+            return ResponseEntity.ok(autoActualizado);
+
+        } catch (IllegalArgumentException e) {
+            logger.warn("Error de validación: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (RuntimeException e) {
+            logger.error("Error al actualizar auto: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     // Eliminar Auto

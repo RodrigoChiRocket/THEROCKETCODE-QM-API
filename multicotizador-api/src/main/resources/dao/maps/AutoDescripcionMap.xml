@@ -29,6 +29,12 @@
                  )
     </insert>
 
+    <!-- CORRECCIÓN PRINCIPAL: Cambiar la consulta para buscar por V_NOMBRE en lugar de I_AUTO_DESCRIPCION_ID -->
+    <select id="obtenerAutoDescripcionPorNombre" resultMap="AutoDescripcionResultMap" parameterType="java.lang.String">
+        SELECT * FROM C##MULTICOTIZADOR.T_AUTOS_DESCRIPCION_MC
+        WHERE V_NOMBRE = #{vNombre, jdbcType=VARCHAR}
+    </select>
+
     <select id="obtenerAutoDescripcion" resultMap="AutoDescripcionResultMap" parameterType="java.math.BigDecimal">
         SELECT * FROM C##MULTICOTIZADOR.T_AUTOS_DESCRIPCION_MC
         WHERE I_AUTO_DESCRIPCION_ID = #{id}

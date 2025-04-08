@@ -91,6 +91,7 @@
         WHERE I_RESULTADO_COTIZACION_ID = #{id}
     </delete>
 
+    <!--No se utiliza, se remplaza por el filtro-->
     <select id="obtenerResultadoPorCotizacionClave" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
         SELECT *
         FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
@@ -119,7 +120,7 @@
             AND I_COTIZACION_CLAVE = #{cotizacionClave}
         </if>
         <!-- Excluir registros con V_NOMBRE_SEGURO = 'Completado' o 'Error' -->
-        AND V_NOMBRE_SEGURO NOT IN ('Completado', 'Error')
+        AND V_NOMBRE_COBERTURA NOT IN ('Completado', 'Error')
         <!-- Filtro por nombre de seguro -->
         <if test="vNombreSeguro != null and vNombreSeguro != ''">
             AND V_NOMBRE_SEGURO = #{vNombreSeguro}
@@ -131,27 +132,38 @@
     </select>
 
 
-
-    <!-- <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
-        SELECT CASE
-                   WHEN COUNT(DISTINCT V_NOMBRE_SEGURO) = 4 THEN 1
-                   ELSE 0
-                   END
-        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
-        WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
-          AND V_NOMBRE_SEGURO IN ('GNP', 'AXA', 'Chubb', 'Mapfre')
-    </select>-->
-
-
     <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
-        SELECT CASE
-                   WHEN COUNT(*) > 0 THEN 1
-                   ELSE 0
-                   END
-        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
-        WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
-          AND V_NOMBRE_SEGURO = 'Completado'
-    </select>
+          SELECT CASE
+                     WHEN COUNT(DISTINCT V_NOMBRE_SEGURO) = 4 THEN 1
+                     ELSE 0
+                     END
+          FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+          WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+            AND V_NOMBRE_SEGURO IN ('GNP', 'AXA', 'Chubb', 'Mapfre')
+      </select>
 
+    <!--
+          <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
+              SELECT CASE
+                         WHEN SUM(CASE WHEN V_NOMBRE_COBERTURA = 'Error' THEN 1 ELSE 0 END) = 5 THEN 1
+                         ELSE 0
+                         END AS resultado
+              FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+              WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
 
-</mapper>
+          </select>
+
+  -->
+        <!-- Version de la ultima version que tenia
+            <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
+                SELECT CASE
+                           WHEN COUNT(*) > 0 THEN 1
+                           ELSE 0
+                           END
+                FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+                WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+                  AND V_NOMBRE_COBERTURA = 'Completado'
+            </select>
+        -->
+
+    </mapper>

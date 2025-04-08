@@ -60,18 +60,20 @@
         <result property="iAutoDescripcionClave" column="I_AUTO_DESCRIPCION_ID"/>
     </resultMap>
 
-    <!-- Actualiza un auto -->
+
+
     <update id="actualizarAuto" parameterType="com.qualitas.portal.fraudes.account.domain.model.Auto">
         UPDATE T_AUTOS_MC
         SET
-            D_AÑO = #{dAno},
-            D_FECHA_CREACION = #{dFechaCreacion},
-            LUSUARIO_CREACION = #{iUsuarioCreacion},
-            I_AUTO_MARCA_ID = #{iAutoMarcaClave},
-            I_AUTO_MODELO_ID = #{iAutoModeloClave},
-            I_AUTO_DESCRIPCION_ID = #{iAutoDescripcionClave}
-        WHERE I_AUTO_ID = #{iAutoId}
+            D_AÑO = #{dAno,jdbcType=NUMERIC},
+            D_FECHA_CREACION = #{dFechaCreacion,jdbcType=DATE},
+            LUSUARIO_CREACION = #{iUsuarioCreacion,jdbcType=VARCHAR},
+            I_AUTO_MARCA_ID = #{iAutoMarcaClave,jdbcType=NUMERIC},
+            I_AUTO_MODELO_ID = #{iAutoModeloClave,jdbcType=NUMERIC},
+            I_AUTO_DESCRIPCION_ID = #{iAutoDescripcionClave,jdbcType=NUMERIC}
+        WHERE I_AUTO_ID = #{iAutoId,jdbcType=NUMERIC}
     </update>
+
 
     <!-- Lista todos los autos -->
     <select id="listarAuto" resultMap="AutoResultado">

@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="TipoSeguroDao">
+<mapper namespace="com.qualitas.portal.fraudes.account.Infrastructure.dao.TipoSeguroDao">
 
     <resultMap id="TipoSeguroResultMap" type="com.qualitas.portal.fraudes.account.domain.model.TipoSeguro">
         <id property="lTipoSeguroId" column="L_TIPO_SEGURO_ID" />
@@ -25,6 +25,11 @@
                      #{lUsuarioCreacion}
                  )
     </insert>
+
+    <select id="obtenerTipoSeguroPorNombre" resultMap="TipoSeguroResultMap" parameterType="java.lang.String">
+        SELECT * FROM C##MULTICOTIZADOR.T_TIPOS_SEGUROS_MC
+        WHERE V_NOMBRE = #{vNombre}
+    </select>
 
     <select id="obtenerTipoSeguro" resultMap="TipoSeguroResultMap" parameterType="java.math.BigDecimal">
         SELECT * FROM C##MULTICOTIZADOR.T_TIPOS_SEGUROS_MC

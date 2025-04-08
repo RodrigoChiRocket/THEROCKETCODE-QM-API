@@ -26,17 +26,38 @@
     <context:component-scan base-package="com.qualitas.portal"/>
 
     <!-- Configures the @Controller programming model -->
-    <mvc:annotation-driven/>
 
     <!-- filtros para vulnerabilidades
     <bean id="FiltroCRLF" class="com.qualitas.portal.accountapi.configuracion.filter.FiltroCRLF"/>
     <bean id="FiltroXSS" class="com.qualitas.portal.accountapi.configuracion.filter.FiltroXSS" />
     <bean id="FiltroJWT" class="com.qualitas.portal.accountapi.configuracion.filter.FiltroJWT" />
     <bean class="com.qualitas.portal.accountapi.configuracion.cors.RestConfig" /> -->
+    <!-- Configuración para manejo de archivos multipart -->
+    <!-- Habilita el soporte para multipart -->
+
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- Configuración multipart (debe estar solo aquí, no duplicada en otros XML) -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 50MB max -->
+        <property name="maxUploadSize" value="52428800"/>
+        <!-- 4MB before writing to disk -->
+        <property name="maxInMemorySize" value="4194304"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="resolveLazily" value="true"/>
+    </bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
         <property name="prefix" value="/WEB-INF/views/"></property>
         <property name="suffix" value=".jsp"></property>
     </bean>
+
+
 </beans>

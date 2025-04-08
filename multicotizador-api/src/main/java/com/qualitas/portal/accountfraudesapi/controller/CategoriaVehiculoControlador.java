@@ -2,6 +2,7 @@ package com.qualitas.portal.accountfraudesapi.controller;
 
 import com.qualitas.portal.fraudes.account.application.dto.CategoriaVehiculoDTO;
 import com.qualitas.portal.fraudes.account.application.service.CategoriaVehiculoService;
+import com.qualitas.portal.fraudes.account.domain.model.CategoriaVehiculo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,11 @@ public class CategoriaVehiculoControlador {
     @GetMapping("/{id}")
     public CategoriaVehiculoDTO obtenerCategoriaVehiculo(@PathVariable BigDecimal id) {
         return categoriaVehiculoService.obtenerCategoriaVehiculo(id);
+    }
+
+    @GetMapping("/por-nombre")
+    public CategoriaVehiculo obtenerCategoriaVehiculoPorNombre() {
+        return categoriaVehiculoService.obtenerCategoriaVehiculoPorNombre("Auto/Suv");
     }
 
     @PutMapping("/{id}")

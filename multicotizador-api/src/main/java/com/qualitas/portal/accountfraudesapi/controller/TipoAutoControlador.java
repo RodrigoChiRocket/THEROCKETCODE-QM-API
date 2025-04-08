@@ -1,6 +1,7 @@
 package com.qualitas.portal.accountfraudesapi.controller;
 import com.qualitas.portal.fraudes.account.application.dto.TipoAutoDTO;
 import com.qualitas.portal.fraudes.account.application.service.TipoAutoService;
+import com.qualitas.portal.fraudes.account.domain.model.TipoAuto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,4 +39,11 @@ public class TipoAutoControlador {
     public void eliminarTipoAuto(@PathVariable BigDecimal id) {
         tipoAutoService.eliminarTipoAuto(id);
     }
+
+
+    @GetMapping("por-nombre/{vNombre}")
+    public TipoAuto obtenerTipoAutoPorNombre(@PathVariable String vNombre) {
+        return tipoAutoService.obtenerTipoAutoPorNombre(vNombre);
+    }
+
 }

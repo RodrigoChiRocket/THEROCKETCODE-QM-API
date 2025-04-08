@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="UsoDao">
+<mapper namespace="com.qualitas.portal.fraudes.account.Infrastructure.dao.UsoDao">
 
     <resultMap id="UsoResultMap" type="com.qualitas.portal.fraudes.account.domain.model.Uso">
         <id property="iUsoId" column="I_USO_ID" />
@@ -23,10 +23,18 @@
                  )
     </insert>
 
+    <select id="obtenerUsoPorNombre" resultMap="UsoResultMap" parameterType="java.lang.String">
+        SELECT * FROM C##MULTICOTIZADOR.T_USOS_MC
+        WHERE V_NOMBRE = #{vNombre}
+    </select>
+
+
     <select id="obtenerUso" resultMap="UsoResultMap" parameterType="java.math.BigDecimal">
         SELECT * FROM C##MULTICOTIZADOR.T_USOS_MC
         WHERE I_USO_ID = #{id}
     </select>
+
+
 
     <update id="actualizarUso" parameterType="com.qualitas.portal.fraudes.account.domain.model.Uso">
         UPDATE C##MULTICOTIZADOR.T_USOS_MC

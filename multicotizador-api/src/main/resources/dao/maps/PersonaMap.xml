@@ -30,11 +30,10 @@
         WHERE I_PERSONA_ID = #{id}
     </select>
 
-    <!-- Consulta para actualizar una Persona -->
     <update id="actualizarPersona" parameterType="com.qualitas.portal.fraudes.account.domain.model.Persona">
         UPDATE T_PERSONAS_MC
         SET V_NOMBRE = #{vNombre},
-            V_SEXO = #{vSexo, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+            V_SEXO = #{vSexo, jdbcType=VARCHAR},
             I_CODIGO_POSTAL = #{iCodigoPostal},
             D_FECHA_NACIMIENTO = #{dFechaNacimiento},
             V_CORREO = #{vCorreo},

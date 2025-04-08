@@ -62,4 +62,8 @@ public class AutoModeloControlador {
         List<AutoModeloDTO> autoModelos = autoModeloService.listarAutos();
         return ResponseEntity.ok(autoModelos);
     }
+    @GetMapping("obtener-por-nombre/{vNombre}")
+    public ResponseEntity<AutoModeloDTO> obtenerAutoModeloPorNombre(@PathVariable String vNombre){
+        return   new ResponseEntity<>(autoModeloService.obtenerAutoMoeloPorNombre(vNombre), HttpStatus.OK);
+    }
 }
