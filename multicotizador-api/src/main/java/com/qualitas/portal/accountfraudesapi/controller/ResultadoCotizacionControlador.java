@@ -129,6 +129,17 @@ public class ResultadoCotizacionControlador {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/contar-por-rutina/{rutinaClave}")
+    public ResponseEntity<Integer> contarRegistrosPorRutina(@PathVariable BigDecimal rutinaClave) {
+        logger.info("Recibiendo solicitud para contar registros por rutina: {}", rutinaClave);
+        int total = resultadoCotizacionService.contarRegistrosPorRutina(rutinaClave);
+        logger.info("Total de registros encontrados: {}", total);
+        return ResponseEntity.ok(total);
+    }
+
+
+
     
 
 }

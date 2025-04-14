@@ -5,6 +5,7 @@ import com.qualitas.portal.fraudes.account.application.service.AutoDescripcionSe
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +21,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/rutina-carga")
 public class RutinaCargaController {
 
@@ -69,5 +72,45 @@ public class RutinaCargaController {
         logger.info("Listando todas las RutinaCargas");
         List<RutinaCargaDTO> rutinas = rutinaCargaService.listarRutinas();
         return ResponseEntity.ok(rutinas);
+    }
+
+
+    @PatchMapping("/{id}/datos-obtenidos")
+    public ResponseEntity<Void> actualizarDatosObtenidos(
+            @PathVariable BigDecimal id,
+            @RequestParam Integer nuevosDatos) {
+
+        logger.info("Recibida solicitud para actualizar datos obtenidos. ID: {}, Valor: {}", id, nuevosDatos);
+
+        rutinaCargaService.actualizarDatosObtenidos(id, nuevosDatos);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
+
+    @PatchMapping("/{id}/programacion")
+    public ResponseEntity<Void> actualizarProgramacion(
+            @PathVariable BigDecimal id,
+            @RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime nuevaProgramacion) {
+
+        logger.info("Recibida solicitud para actualizar programación. ID: {}, Nueva fecha: {}", id, nuevaProgramacion);
+
+        rutinaCargaService.actualizarProgramacion(id, nuevaProgramacion);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PatchMapping("/{id}/habilitado")
+    public ResponseEntity<Void> actualizarHabilitado(
+            @PathVariable BigDecimal id,
+            @RequestParam("valor") Integer habilitado) {
+
+        logger.info("Recibida solicitud para actualizar habilitado. ID: {}, Valor: {}", id, habilitado);
+
+        rutinaCargaService.actualizarHabilitado(id, habilitado);
+
+        return ResponseEntity.noContent().build();
     }
 }

@@ -22,7 +22,9 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -86,6 +88,10 @@ public class CotizacionControlador {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
+
+
+
+
     @PostMapping("/completa")
     public ResponseEntity<CotizacionCompletaResponseDTO> crearCotizacionCompleta(@RequestBody CotizacionCompletaDTO cotizacionCompletaDTO) {
         logger.info("Creando cotización completa con los datos: {}", cotizacionCompletaDTO);
@@ -129,6 +135,61 @@ public class CotizacionControlador {
         // Retornar inmediatamente sin esperar la respuesta HTTP
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
+/*
+
+    @PostMapping("/completa")
+    public ResponseEntity<CotizacionCompletaResponseDTO> crearCotizacionCompleta(@RequestBody CotizacionCompletaDTO cotizacionCompletaDTO) {
+        logger.info("Creando cotización completa con los datos: {}", cotizacionCompletaDTO);
+        CotizacionCompletaResponseDTO responseDTO = cotizacionService.crearCotizacionCompleta(cotizacionCompletaDTO);
+        // Lista de endpoints
+        List<String> endpoints = Arrays.asList(
+                "http://localhost:8001/cotizacion/axa",
+                "http://localhost:8002/cotizacion/gnp",
+                "http://localhost:8003/cotizacion/hdi",
+                "http://localhost:8004/cotizacion/chubb",
+                "http://localhost:8005/cotizacion/mapfre"
+        );
+        logger.info("Iniciando envío paralelo a {} endpoints", endpoints.size());
+        // Enviar a cada endpoint en paralelo
+        List<CompletableFuture<Void>> futures = endpoints.stream()
+                .map(endpoint -> CompletableFuture.runAsync(() -> {
+                    long startTime = System.currentTimeMillis();
+                    logger.info("[INICIO] Enviando cotización a {}", endpoint);
+                    try {
+                        RestTemplate restTemplate = new RestTemplate();
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.setContentType(MediaType.APPLICATION_JSON);
+                        HttpEntity<CotizacionCompletaResponseDTO> request = new HttpEntity<>(responseDTO, headers);
+                        ResponseEntity<String> response = restTemplate.postForEntity(endpoint, request, String.class);
+                        if (response.getStatusCode().is2xxSuccessful()) {
+                            logger.info("[ÉXITO] Respuesta de {} en {} ms: {}",
+                                    endpoint,
+                                    (System.currentTimeMillis() - startTime),
+                                    response.getBody());
+                        } else {
+                            logger.error("[ERROR] {} respondió con código: {}",
+                                    endpoint,
+                                    response.getStatusCode());
+                        }
+                    } catch (Exception e) {
+                        logger.error("[FALLO] Error en {}: {}", endpoint, e.getMessage());
+                    } finally {
+                        logger.info("[FIN] Procesamiento completado para {}", endpoint);
+                    }
+                }))
+                .collect(Collectors.toList());
+        // Opcional: Esperar a que todas las peticiones terminen (solo para logs)
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenRun(() -> logger.info("Todas las cotizaciones se han procesado en paralelo"))
+                .exceptionally(ex -> {
+                    logger.error("Algunas cotizaciones fallaron", ex);
+                    return null;
+                });
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    }
+
+
+ */
 
     // Crear Cotización
     @PostMapping
@@ -183,10 +244,10 @@ public class CotizacionControlador {
 
     // Listar todas las Cotizaciones
     @GetMapping
-    public ResponseEntity<List<CotizacionDTO>> listarCotizaciones() {
+    public ResponseEntity<List<CotizacionCompletaResponseDTO>> listarCotizaciones() {
         logger.info("Listando todas las cotizaciones");
         // Obtener todas las cotizaciones a través del servicio
-        List<CotizacionDTO> cotizaciones = cotizacionService.listarTodasLasCotizaciones();
+        List<CotizacionCompletaResponseDTO> cotizaciones = cotizacionService.listarTodasLasCotizaciones();
         return ResponseEntity.ok(cotizaciones);
     }
 
@@ -347,6 +408,78 @@ public class CotizacionControlador {
         requestDTO.setAuto(responseDTO.getAuto());
         requestDTO.setCotizacion(responseDTO.getCotizacion());
         return requestDTO;
+    }
+
+
+
+
+
+    @GetMapping("/listar-y-enviar")
+    public ResponseEntity<List<CotizacionCompletaResponseDTO>> listarYEnviarCotizaciones() {
+        logger.info("Listando y enviando todas las cotizaciones");
+
+        // 1. Obtener todas las cotizaciones
+        List<CotizacionCompletaResponseDTO> cotizaciones = cotizacionService.listarTodasLasCotizaciones();
+
+        // 2. Crear executor para enviar en segundo plano
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5); // Pool de 5 hilos
+
+        // 3. Enviar cada cotización al endpoint externo
+        cotizaciones.forEach(cotizacion -> {
+            executorService.schedule(() -> {
+                try {
+                    logger.info("Enviando cotización ID: {} a endpoint externo",
+                            cotizacion.getCotizacion().getiCotizacionId());
+
+                    // Convertir ResponseDTO a RequestDTO
+                    CotizacionCompletaDTO requestDTO = new CotizacionCompletaDTO();
+                    requestDTO.setPersona(cotizacion.getPersona());
+                    requestDTO.setAuto(cotizacion.getAuto());
+                    requestDTO.setCotizacion(cotizacion.getCotizacion());
+
+                    // Configurar RestTemplate
+                    RestTemplate restTemplate = new RestTemplate();
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+
+                    // Crear request
+                    HttpEntity<CotizacionCompletaDTO> request = new HttpEntity<>(requestDTO, headers);
+
+                    // Enviar POST
+                    ResponseEntity<String> response = restTemplate.postForEntity(
+                            "http://localhost:8000/multicotizador-api/cotizacion/completa",
+                            request,
+                            String.class);
+
+                    if (response.getStatusCode().is2xxSuccessful()) {
+                        logger.info("Cotización ID: {} enviada con éxito",
+                                cotizacion.getCotizacion().getiCotizacionId());
+                    } else {
+                        logger.error("Error al enviar cotización ID: {}. Código: {}",
+                                cotizacion.getCotizacion().getiCotizacionId(),
+                                response.getStatusCode());
+                    }
+                } catch (Exception e) {
+                    logger.error("Error al enviar cotización", e);
+                }
+            }, 100, TimeUnit.MILLISECONDS); // Pequeño delay entre envíos
+        });
+
+        // 4. Cerrar el executor después de un tiempo
+        executorService.schedule(() -> {
+            executorService.shutdown();
+            try {
+                if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }, 5, TimeUnit.SECONDS);
+
+        // 5. Retornar la lista de cotizaciones
+        return ResponseEntity.ok(cotizaciones);
     }
 
 }

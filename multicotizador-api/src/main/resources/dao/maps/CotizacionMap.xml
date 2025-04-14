@@ -107,16 +107,18 @@
 
     <!-- Listar todas las cotizaciones -->
     <select id="listarTodasLasCotizaciones" resultMap="CotizacionResultMap">
-        SELECT I_COTIZACION_ID,
-               I_CATEGORIA_VEHICULO_CLAVE,
-               I_TIPO_SEGURO_CLAVE,
-               I_USO_CLAVE,
-               I_TIPO_AUTO_CLAVE,
-               I_AUTO_CLAVE,
-               I_PERSONA_CLAVE,
-               D_FECHA_CREACION,
-               I_USUARIO_CREACION
+        SELECT
+            I_COTIZACION_ID,
+            I_CATEGORIA_VEHICULO_CLAVE,
+            I_TIPO_SEGURO_CLAVE,
+            I_USO_CLAVE,
+            I_TIPO_AUTO_CLAVE,
+            I_AUTO_CLAVE,
+            I_PERSONA_CLAVE,
+            D_FECHA_CREACION,
+            I_USUARIO_CREACION
         FROM C##MULTICOTIZADOR.T_COTIZACION_FR_MC
+        WHERE B_CATALOGO_DATO = 1
     </select>
 
 
