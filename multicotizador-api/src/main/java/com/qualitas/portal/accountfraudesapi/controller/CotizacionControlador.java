@@ -107,7 +107,7 @@ public class CotizacionControlador {
                 System.out.println("Enviando petición HTTP a Multicotizador API: " + contador.get());
                 // Create RestTemplate
                 RestTemplate restTemplate = new RestTemplate();
-                String url = "http://localhost:8000/multicotizador-api/cotizacion/completa";
+                String url = "http://localhost:8000/cotizacion/";
 
                 // Create request headers
                 HttpHeaders headers = new HttpHeaders();
