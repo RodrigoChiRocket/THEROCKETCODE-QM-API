@@ -1,17 +1,24 @@
 package com.qualitas.portal.accountfraudesapi.controller;
 
 
+import com.qualitas.portal.fraudes.account.application.dto.response.CotizacionCompletaResponseDTO;
+import com.qualitas.portal.fraudes.account.application.service.CotizacionService;
 import com.qualitas.portal.fraudes.account.application.service.ResultadoCotizacionService;
+import com.qualitas.portal.fraudes.account.application.service.RutinaCargaService;
 import com.qualitas.portal.fraudes.account.domain.dto.ResultadoCotizacionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,6 +29,23 @@ public class ResultadoCotizacionControlador {
 
     @Autowired
     private ResultadoCotizacionService resultadoCotizacionService;
+    @Autowired
+    private RutinaCargaService rutinaCargaService;
+    @Autowired
+    private CotizacionService cotizacionService;
+
+
+    /*
+    Documentacion
+
+     */
+
+    @GetMapping("obtener-resultado-catalogo")
+    public ResponseEntity<List<ResultadoCotizacionDTO>> obtenerResultadoCatalogo() {
+        return ResponseEntity.ok(resultadoCotizacionService.obtenerResultadoCotizacionPorCatalogo());
+    }
+
+
 
     @PostMapping
     public ResponseEntity<ResultadoCotizacionDTO> crearResultadoCotizacion(@RequestBody ResultadoCotizacionDTO dto) {
@@ -31,6 +55,22 @@ public class ResultadoCotizacionControlador {
 
         // Procesar la solicitud
         ResultadoCotizacionDTO resultadoDTO = resultadoCotizacionService.crearResultadoCotizacion(dto);
+
+        // Loguear el resultado creado
+        logger.info("Resultado de cotización creado: {}", resultadoDTO);
+        return new ResponseEntity<>(resultadoDTO, HttpStatus.CREATED);
+    }
+
+
+
+    @PostMapping("/catalogo")
+    public ResponseEntity<ResultadoCotizacionDTO> crearResultadoCotizacionCatalogo(@RequestBody ResultadoCotizacionDTO dto) {
+        // Loguear los datos del request
+        logger.info("Recibiendo solicitud para crear un resultado de cotización. Datos recibidos:" + dto);
+
+
+        // Procesar la solicitud
+        ResultadoCotizacionDTO resultadoDTO = resultadoCotizacionService.crearResultadoCotizacionCatalogo(dto);
 
         // Loguear el resultado creado
         logger.info("Resultado de cotización creado: {}", resultadoDTO);
@@ -139,7 +179,5 @@ public class ResultadoCotizacionControlador {
     }
 
 
-
-    
 
 }

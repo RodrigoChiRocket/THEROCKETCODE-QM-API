@@ -4,13 +4,32 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-	   		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-	   		http://www.springframework.org/schema/context
-	   		http://www.springframework.org/schema/context/spring-context-4.3.xsd
-			http://www.springframework.org/schema/mvc
-			http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd"
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+           http://www.springframework.org/schema/task
+           http://www.springframework.org/schema/task/spring-task-4.3.xsd"
        default-autowire="byName">
+
+    <!-- Configuración del scheduler para ejecuciones automáticas -->
+
+
+    <task:annotation-driven scheduler="scheduledExecutor" />
+    <task:scheduler id="scheduledExecutor" pool-size="5"/>
+
+    <!-- Configuración simplificada del RestTemplate -->
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <property name="requestFactory">
+            <bean class="org.springframework.http.client.SimpleClientHttpRequestFactory">
+                <property name="connectTimeout" value="5000"/>
+                <property name="readTimeout" value="15000"/>
+            </bean>
+        </property>
+    </bean>
 
     <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
@@ -36,13 +55,14 @@
     <!-- Habilita el soporte para multipart -->
 
 
+    <!-- Configures the @Controller programming model -->
     <mvc:annotation-driven>
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <!-- Configuración multipart (debe estar solo aquí, no duplicada en otros XML) -->
+    <!-- Configuración para manejo de archivos multipart -->
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- 50MB max -->
@@ -58,6 +78,4 @@
         <property name="prefix" value="/WEB-INF/views/"></property>
         <property name="suffix" value=".jsp"></property>
     </bean>
-
-
 </beans>
