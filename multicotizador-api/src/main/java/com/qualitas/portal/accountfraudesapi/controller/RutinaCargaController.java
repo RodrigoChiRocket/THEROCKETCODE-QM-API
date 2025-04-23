@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @CrossOrigin(origins = "*")
+
 @RequestMapping("/rutina-carga")
 public class RutinaCargaController {
 
@@ -163,7 +165,7 @@ private ResultadoCotizacionService resultadoCotizacionService;
 
 
     @GetMapping("/enviar/chubb")
-    public ResponseEntity<String> enviarDirectoChubb() {
+    public ResponseEntity<?> enviarDirectoChubb() {
         logger.info("[MANUAL] Solicitado envío MANUAL a Chubb");
         try {
             // Registrar inicio
@@ -173,6 +175,7 @@ private ResultadoCotizacionService resultadoCotizacionService;
             List<CotizacionCompletaResponseDTO> cotizaciones = cotizacionService.listarCotizacionesCompletas();
             logger.info("[MANUAL] Obtenidas {} cotizaciones para envío manual", cotizaciones.size());
 
+            // Enviar las cotizaciones a Chubb (pero no usamos esta respuesta)
             ResponseEntity<String> response = enviarCotizaciones("Chubb", "http://localhost:8004/cotizacion/chubb", cotizaciones);
 
             // Verificar y procesar completadas
@@ -183,7 +186,10 @@ private ResultadoCotizacionService resultadoCotizacionService;
             } else {
                 logger.warn("[MANUAL] Envío a Chubb completado con estado {}", response.getStatusCode());
             }
-            return response;
+
+            // Devolver la lista de cotizaciones en lugar de la respuesta del envío
+            return ResponseEntity.ok(cotizaciones);
+
         } catch (Exception e) {
             logger.error("[MANUAL] Error en envío manual a Chubb: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

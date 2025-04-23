@@ -3,12 +3,16 @@ package com.qualitas.portal.accountfraudesapi.controller;
 import com.qualitas.portal.accountfraudesapi.configuracion.security.CustomUserDetailsService;
 import com.qualitas.portal.accountfraudesapi.response.Response;
 import com.qualitas.portal.accountfraudesapi.util.jwt.JwtTokenUtil;
-
-import com.qualitas.portal.fraudes.account.application.dto.request.CredencialesDto;
+import com.qualitas.portal.fraudes.account.application.dto.request.ActualizarContrasenaRequest;
+import com.qualitas.portal.fraudes.account.application.dto.request.LoginRequestDTO;
+import com.qualitas.portal.fraudes.account.application.dto.request.PasswordResetRequestDTO;
+import com.qualitas.portal.fraudes.account.application.dto.request.RegisterRequestDTO;
+import com.qualitas.portal.fraudes.account.application.dto.response.AuthResponseDTO;
+import com.qualitas.portal.fraudes.account.application.dto.response.PasswordResetTokenDTO;
 import com.qualitas.portal.fraudes.account.application.service.AutenticacionService;
 import com.qualitas.portal.fraudes.account.application.service.CodigoEmailService;
+import com.qualitas.portal.fraudes.account.application.service.PasswordResetService;
 import com.qualitas.portal.fraudes.account.application.service.RestablecerContrasenaService;
-import com.qualitas.portal.fraudes.account.domain.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,90 +26,195 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/auth")
+@CrossOrigin(origins = "*")
+@RequestMapping("/api/auth")
 public class AutenticacionControlador {
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
+
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+
     @Autowired
-    private RestablecerContrasenaService restablecerContrasenaService;
+    private PasswordResetService passwordResetService;
 
     @Autowired
     private CodigoEmailService codigoEmailService;
 
     @Autowired
-    AutenticacionService autenticacionService;
+    private AutenticacionService autenticacionService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody CredencialesDto credencialesUsuario) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
         try {
+            // Autenticar al usuario
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(credencialesUsuario.getvUsuario(),
-                            credencialesUsuario.getvContrasena())
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    )
             );
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(credencialesUsuario.getvUsuario());
+            // Obtener información del usuario desde el servicio
+            AuthResponseDTO authResponse = autenticacionService.autenticarUsuario(loginRequest);
 
-            String token = jwtTokenUtil.generateToken(userDetails.getUsername(),
-                    userDetails.getAuthorities());
+            // Generar token JWT en el controlador con los datos adicionales
+            UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+            String token = jwtTokenUtil.generateToken(
+                    userDetails.getUsername(),
+                    authResponse.getRole(),
+                    authResponse.getUsername()
+            );
 
-            // Devolver el token
-                return Response.crearRespuesta()
-                        .codigoRespuesta(HttpStatus.OK)
-                        .agregarAtributo("token", token)
-                        .crear();
+            authResponse.setToken(token);
+
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.OK)
+                    .agregarAtributo("token", authResponse.getToken())
+                    .agregarAtributo("userId", authResponse.getUserId())
+                    .agregarAtributo("username", authResponse.getUsername())
+                    .agregarAtributo("role", authResponse.getRole())
+                    .crear();
+
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.UNAUTHORIZED)
+                    .agregarAtributo("mensaje", "Credenciales inválidas")
+                    .crear();
+        } catch (Exception e) {
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .agregarAtributo("mensaje", "Error durante la autenticación")
+                    .crear();
         }
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
-        BigDecimal iUsuaID = autenticacionService.registrarUsuario(usuario);
-
-        return Response.crearRespuesta()
-                .codigoRespuesta(HttpStatus.CREATED)
-                .agregarAtributo("iUsuaID", iUsuaID)
-                .crear();
-    }
-
-
-
-
-
-
-    // Endpoint para solicitar el restablecimiento de contraseña (genera y envía el código)
-    @PostMapping("/solicitar")
-    public ResponseEntity<String> solicitarRestablecimiento(@RequestParam String email) {
-        codigoEmailService.generarCodigoParaRestablecimiento(email);
-        return ResponseEntity.ok("Código de restablecimiento enviado al correo.");
-    }
-
-
-    @PostMapping("/restablecer")
-    public ResponseEntity<String> restablecerContrasena(@RequestParam String email,
-                                                        @RequestParam String nuevaContrasena,
-                                                        @RequestParam String codigo) {
-
-        boolean esValido = codigoEmailService.verificarCodigoRestablecimiento(email, codigo);
+    public ResponseEntity<?> registrarUsuario(@RequestBody RegisterRequestDTO registerRequest) {
         try {
-            // Llama al servicio para restablecer la contraseña
-            restablecerContrasenaService.restablecerContrasena(email, nuevaContrasena, codigo);
-            return ResponseEntity.ok("Contraseña actualizada correctamente.");
+            // Registrar el nuevo usuario
+            BigDecimal userId = autenticacionService.registrarUsuario(registerRequest);
+
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.CREATED)
+                    .agregarAtributo("userId", userId)
+                    .agregarAtributo("mensaje", "Usuario registrado exitosamente")
+                    .crear();
+
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.BAD_REQUEST)
+                    .agregarAtributo("mensaje", e.getMessage())
+                    .crear();
+        } catch (Exception e) {
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .agregarAtributo("mensaje", "Error al registrar el usuario")
+                    .crear();
         }
     }
 
-    @RequestMapping("/check")
-    public String check() {
-        return "OK";
+    @PatchMapping("/actualizar-contrasena")
+    public ResponseEntity<?> actualizarContrasena(@RequestBody ActualizarContrasenaRequest request) {
+        try {
+            autenticacionService.actualizarContrasenaPorEmail(request.getEmail(), request.getNuevaContrasena());
+
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.OK)
+                    .agregarAtributo("mensaje", "Contraseña actualizada exitosamente")
+                    .crear();
+
+        } catch (RuntimeException e) {
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.BAD_REQUEST)
+                    .agregarAtributo("mensaje", e.getMessage())
+                    .crear();
+        } catch (Exception e) {
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .agregarAtributo("mensaje", "Error al actualizar la contraseña")
+                    .crear();
+        }
     }
 
-}
+
+    @PostMapping("/solicitar-restablecimiento")
+    public ResponseEntity<?> solicitarRestablecimiento(@RequestParam String email) {
+        try {
+            codigoEmailService.generarCodigoParaRestablecimiento(email);
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.OK)
+                    .agregarAtributo("mensaje", "Código de restablecimiento enviado al correo")
+                    .crear();
+        } catch (Exception e) {
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.BAD_REQUEST)
+                    .agregarAtributo("mensaje", e.getMessage())
+                    .crear();
+        }
+    }
+
+
+    @PostMapping("/request")
+    public ResponseEntity<?> requestPasswordReset(@RequestParam String email) {
+        try {
+            PasswordResetTokenDTO tokenDTO = passwordResetService.generarPasswordResetToken(email);
+
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.OK)
+                    .agregarAtributo("mensaje", "Se ha enviado un enlace de restablecimiento a tu correo")
+                    .agregarAtributo("expira", tokenDTO.getExpiration())
+                    .crear();
+
+        } catch (Exception e) {
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.BAD_REQUEST)
+                    .agregarAtributo("mensaje", e.getMessage())
+                    .crear();
+        }
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDTO request) {
+        try {
+            passwordResetService.resetPassword(request.getToken(), request.getEmail(), request.getNewPassword());
+
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.OK)
+                    .agregarAtributo("mensaje", "Contraseña actualizada exitosamente")
+                    .crear();
+
+        } catch (Exception e) {
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.BAD_REQUEST)
+                    .agregarAtributo("mensaje", e.getMessage())
+                    .crear();
+        }
+    }
+
+    @GetMapping("/validate-token")
+    public ResponseEntity<?> validateToken(@RequestParam String token, @RequestParam String email) {
+        try {
+            boolean isValid = passwordResetService.validarToken(token, email);
+
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.OK)
+                    .agregarAtributo("valido", isValid)
+                    .crear();
+
+        } catch (Exception e) {
+            return Response.crearRespuesta()
+                    .codigoRespuesta(HttpStatus.BAD_REQUEST)
+                    .agregarAtributo("mensaje", e.getMessage())
+                    .crear();
+        }
+    }
+
+    }
+
+

@@ -1,49 +1,51 @@
 package com.qualitas.portal.accountfraudesapi.configuracion.security;
 
-import com.qualitas.portal.fraudes.account.application.dto.response.RolRespuestaDto;
-import com.qualitas.portal.fraudes.account.application.service.RolService;
 import com.qualitas.portal.fraudes.account.application.service.UsuarioService;
 import com.qualitas.portal.fraudes.account.domain.model.Usuario;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-    @Autowired
-    private RolService rolService;
+    public CustomUserDetailsService(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioService.obtenerUsuarioPorEmail(username);
         if (usuario == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("Usuario no encontrado con email: " + username);
         }
 
-        RolRespuestaDto rol = rolService.obtenerRol(usuario.getiRolClav());
-        if (rol == null) {
-            throw new UsernameNotFoundException("Role not found for user");
-        }
+        // Normalización del rol (asegura que tenga el prefijo ROLE_)
+        String rol = usuarioService.obtenerRolUsuario(usuario.getiIdUsuario().longValue());
+        String rolNormalizado = rol.startsWith("ROLE_") ? rol : "ROLE_" + rol;
 
-        List<GrantedAuthority> authorities = rol.getPermisos().stream()
-                .map(SimpleGrantedAuthority::new) // Cada permiso se convierte en una autoridad
-                .collect(Collectors.toList());
+        // Creación de la lista de authorities (usando Collections.singletonList para mejor performance)
+        List<GrantedAuthority> authorities = Collections.singletonList(
+                new SimpleGrantedAuthority(rolNormalizado)
+        );
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + rol.getvRolNombre()));
-
-        return new User(usuario.getvEmail(), usuario.getvContrasena(), authorities);
+        return new User(
+                usuario.getvEmail(),
+                usuario.getvPasswordHash(),
+                true,  // enabled
+                true,  // accountNonExpired
+                true,  // credentialsNonExpired
+                true,  // accountNonLocked
+                authorities
+        );
     }
 }
-
