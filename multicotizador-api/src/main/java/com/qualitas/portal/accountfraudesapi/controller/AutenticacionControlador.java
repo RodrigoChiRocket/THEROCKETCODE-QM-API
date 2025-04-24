@@ -14,16 +14,22 @@ import com.qualitas.portal.fraudes.account.application.service.CodigoEmailServic
 import com.qualitas.portal.fraudes.account.application.service.PasswordResetService;
 import com.qualitas.portal.fraudes.account.application.service.RestablecerContrasenaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -52,7 +58,7 @@ public class AutenticacionControlador {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
         try {
-            // Autenticar al usuario
+            // Autenticar con Spring Security
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUsername(),
@@ -60,40 +66,38 @@ public class AutenticacionControlador {
                     )
             );
 
-            // Obtener información del usuario desde el servicio
+            // Obtener detalles del usuario
             AuthResponseDTO authResponse = autenticacionService.autenticarUsuario(loginRequest);
 
-            // Generar token JWT en el controlador con los datos adicionales
-            UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+            // Generar token
             String token = jwtTokenUtil.generateToken(
-                    userDetails.getUsername(),
+                    loginRequest.getUsername(),
                     authResponse.getRole(),
                     authResponse.getUsername()
             );
 
-            authResponse.setToken(token);
+            // Preparar respuesta
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("userId", authResponse.getUserId());
+            response.put("username", authResponse.getUsername());
+            response.put("role", authResponse.getRole());
 
-            return Response.crearRespuesta()
-                    .codigoRespuesta(HttpStatus.OK)
-                    .agregarAtributo("token", authResponse.getToken())
-                    .agregarAtributo("userId", authResponse.getUserId())
-                    .agregarAtributo("username", authResponse.getUsername())
-                    .agregarAtributo("role", authResponse.getRole())
-                    .crear();
+            return ResponseEntity.ok()
+                    .header("Authorization", "Bearer " + token)
+                    .body(response);
 
         } catch (BadCredentialsException e) {
-            return Response.crearRespuesta()
-                    .codigoRespuesta(HttpStatus.UNAUTHORIZED)
-                    .agregarAtributo("mensaje", "Credenciales inválidas")
-                    .crear();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("error", "Credenciales inválidas"));
+        } catch (DisabledException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("error", "Usuario deshabilitado"));
         } catch (Exception e) {
-            return Response.crearRespuesta()
-                    .codigoRespuesta(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .agregarAtributo("mensaje", "Error durante la autenticación")
-                    .crear();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Error en el servidor: " + e.getMessage()));
         }
     }
-
     @PostMapping("/registrar")
     public ResponseEntity<?> registrarUsuario(@RequestBody RegisterRequestDTO registerRequest) {
         try {
@@ -143,6 +147,8 @@ public class AutenticacionControlador {
     }
 
 
+
+
     @PostMapping("/solicitar-restablecimiento")
     public ResponseEntity<?> solicitarRestablecimiento(@RequestParam String email) {
         try {
@@ -160,6 +166,9 @@ public class AutenticacionControlador {
     }
 
 
+
+
+    @CrossOrigin(origins = "*")
     @PostMapping("/request")
     public ResponseEntity<?> requestPasswordReset(@RequestParam String email) {
         try {
@@ -179,6 +188,8 @@ public class AutenticacionControlador {
         }
     }
 
+
+    @CrossOrigin(origins = "*")
     @PostMapping("/reset")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDTO request) {
         try {

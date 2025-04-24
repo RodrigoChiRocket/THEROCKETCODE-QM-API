@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/usuarios")
 public class UsuarioControlador {
     @Autowired
@@ -21,15 +22,7 @@ public class UsuarioControlador {
 
     @Autowired
     private EnvioCorreo envioCorreo;
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('GET')")
-    public ResponseEntity<?> obtenerUsuarioPorId(@PathVariable BigDecimal id) {
-        UsuarioRespuesta usuario = usuarioService.obtenerUsuarioPorId(id);
-        return Response.crearRespuesta()
-                .codigoRespuesta(HttpStatus.OK)
-                .agregarAtributo("usuario", usuario)
-                .crear();
-    }
+
 
     @GetMapping("/enviarCorreo")
     public ResponseEntity<String> enviarCorreo() {

@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
-@PreAuthorize("hasAuthority('ROLE_ADMIN')") // Cambio crucial aquí
+
 @RequestMapping("/dashboard")
 @CrossOrigin(origins = "*")
 @RestController
+
 public class DashboardControlador {
 
 
@@ -27,17 +28,20 @@ public class DashboardControlador {
     @Autowired
     private RutinaCargaService rutinaCargaService;
 
-    @GetMapping("/estadisticas-carga-datos")
-    public ResponseEntity<EstadisticasCoberturaDTO> obtenerEstadisticasCoberturas() {
-        EstadisticasCoberturaDTO estadisticas = dashBoardService.obtenerEstadisticasCoberturasMesActual();
-        return ResponseEntity.ok(estadisticas);
-    }
 
     @GetMapping("/estadisticas/por-mes-simple")
     public ResponseEntity<List<Map<String, Object>>> obtenerEstadisticasPorMesSimple() {
         List<Map<String, Object>> datos = dashBoardService.obtenerConteoResultadosPorMes();
         return ResponseEntity.ok(datos);
     }
+
+    @GetMapping("/estadisticas-carga-datos")
+    public ResponseEntity<EstadisticasCoberturaDTO> obtenerEstadisticasCoberturas() {
+        EstadisticasCoberturaDTO estadisticas = dashBoardService.obtenerEstadisticasCoberturasMesActual();
+        return ResponseEntity.ok(estadisticas);
+    }
+
+
 
     @GetMapping("/estadisticas-grafica-tiempo")
     public EstadisticasTiempoEjecucionDTO obtenerEstadisticasCompletas() {
