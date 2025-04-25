@@ -91,7 +91,7 @@ public class CotizacionControlador {
 
 
 
-
+/*
     @PostMapping("/completa")
     public ResponseEntity<CotizacionCompletaResponseDTO> crearCotizacionCompleta(@RequestBody CotizacionCompletaDTO cotizacionCompletaDTO) {
         logger.info("Creando cotización completa con los datos: {}", cotizacionCompletaDTO);
@@ -135,7 +135,9 @@ public class CotizacionControlador {
         // Retornar inmediatamente sin esperar la respuesta HTTP
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
-/*
+
+ */
+
 
     @PostMapping("/completa")
     public ResponseEntity<CotizacionCompletaResponseDTO> crearCotizacionCompleta(@RequestBody CotizacionCompletaDTO cotizacionCompletaDTO) {
@@ -189,7 +191,7 @@ public class CotizacionControlador {
     }
 
 
- */
+
 
     // Crear Cotización
     @PostMapping

@@ -71,9 +71,7 @@ public class AutenticacionControlador {
 
             // Generar token
             String token = jwtTokenUtil.generateToken(
-                    loginRequest.getUsername(),
-                    authResponse.getRole(),
-                    authResponse.getUsername()
+                    loginRequest.getUsername()
             );
 
             // Preparar respuesta

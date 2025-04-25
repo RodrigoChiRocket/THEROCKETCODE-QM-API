@@ -18,7 +18,6 @@ import java.util.Map;
 @RequestMapping("/dashboard")
 @CrossOrigin(origins = "*")
 @RestController
-
 public class DashboardControlador {
 
 

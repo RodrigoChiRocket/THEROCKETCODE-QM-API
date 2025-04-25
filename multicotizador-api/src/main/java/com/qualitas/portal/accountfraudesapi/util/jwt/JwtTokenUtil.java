@@ -17,11 +17,8 @@ public class JwtTokenUtil {
     private static final long EXPIRATION = 86400000; // 24 horas en ms
     private final Key key = new SecretKeySpec(SECRET.getBytes(), SignatureAlgorithm.HS256.getJcaName());
 
-    public String generateToken(String username, String role, String nombreUsuario) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role", role.startsWith("ROLE_") ? role : "ROLE_" + role);
-        claims.put("nombreUsuario", nombreUsuario);
-        return createToken(claims, username);
+    public String generateToken(String username) {
+        return createToken(new HashMap<>(), username);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -34,17 +31,9 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public static String getRoleFromToken(String token) {
-        return getClaimFromToken(token, claims -> claims.get("role", String.class));
-    }
     public static boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
-        final String tokenRole = getRoleFromToken(token);
-
-        return username.equals(userDetails.getUsername())
-                && !isTokenExpired(token)
-                && userDetails.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals(tokenRole));
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private static boolean isTokenExpired(String token) {
