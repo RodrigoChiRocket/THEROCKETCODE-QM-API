@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 
 /*
-Security
+Security pruebas
  */
 @Configuration
 @EnableWebSecurity
