@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.Infrastructure.dao.UsuarioDao">
+    <resultMap id="UsuarioResultMap" type="com.qualitas.portal.fraudes.account.domain.model.Usuario">
+        <id property="iIdUsuario" column="I_ID_USUARIO"/>
+        <result property="vUsuario" column="V_USUARIO"/>
+        <result property="vEmail" column="V_EMAIL"/>
+        <result property="vPasswordHash" column="V_PASSWORD_HASH"/>
+        <result property="iActivo" column="I_ACTIVO"/>
+        <result property="iIdRol" column="I_ID_ROL"/>
+    </resultMap>
+
+    <!-- Operaciones básicas CRUD -->
+    <insert id="crearUsuario" parameterType="com.qualitas.portal.fraudes.account.domain.model.Usuario">
+        <selectKey keyProperty="iIdUsuario" resultType="BigDecimal" order="BEFORE">
+            SELECT C##MULTICOTIZADOR.SEQ_USUARIOS_ID_MC.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO C##MULTICOTIZADOR.USUARIOS_MC (
+        I_ID_USUARIO, V_USUARIO, V_EMAIL, V_PASSWORD_HASH, I_ACTIVO, I_ID_ROL
+        ) VALUES (
+        #{iIdUsuario}, #{vUsuario}, #{vEmail}, #{vPasswordHash}, #{iActivo}, #{iIdRol}
+        )
+    </insert>
+
+    <select id="obtenerUsuarioPorEmail" resultMap="UsuarioResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.USUARIOS_MC
+        WHERE V_EMAIL = #{email}
+    </select>
+
+    <select id="existeUsuarioPorEmail" resultType="int">
+        SELECT COUNT(*) FROM C##MULTICOTIZADOR.USUARIOS_MC
+        WHERE V_EMAIL = #{email}
+    </select>
+
+    <!-- Operaciones de autenticación -->
+    <select id="validarUsuario" resultMap="UsuarioResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.USUARIOS_MC
+        WHERE V_EMAIL = #{username} AND I_ACTIVO = 1
+    </select>
+
+    <select id="obtenerRolUsuario" resultType="String">
+        SELECT R.V_NOMBRE
+        FROM C##MULTICOTIZADOR.ROLES_MC R
+                 JOIN C##MULTICOTIZADOR.USUARIOS_MC U ON R.I_ID_ROL = U.I_ID_ROL
+        WHERE U.I_ID_USUARIO = #{id}
+    </select>
+
+    <!-- Operaciones adicionales -->
+    <select id="obtenerRolID" resultType="long">
+        SELECT I_ID_ROL FROM C##MULTICOTIZADOR.ROLES_MC
+        WHERE V_NOMBRE = #{rol}
+    </select>
+
+    <select id="obtenerUsuarioPorRol" resultType="map">
+        SELECT * FROM C##MULTICOTIZADOR.USUARIOS_MC
+        WHERE I_ID_ROL = #{rol}
+    </select>
+
+    <select id="obtenerNombreUsuarioPorId" resultType="String">
+        SELECT V_USUARIO FROM C##MULTICOTIZADOR.USUARIOS_MC
+        WHERE I_ID_USUARIO = #{id}
+    </select>
+
+    <select id="obtenerUsuarioPorId" resultMap="UsuarioResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.USUARIOS_MC
+        WHERE I_ID_USUARIO = #{id}
+    </select>
+
+    <update id="actualizarContrasena" parameterType="com.qualitas.portal.fraudes.account.domain.model.Usuario">
+        UPDATE C##MULTICOTIZADOR.USUARIOS_MC
+        SET V_PASSWORD_HASH = #{vPasswordHash}
+        WHERE I_ID_USUARIO = #{iIdUsuario}
+    </update>
+
+    <update id="actualizarContrasenaPorEmail" parameterType="com.qualitas.portal.fraudes.account.domain.model.Usuario">
+        UPDATE C##MULTICOTIZADOR.USUARIOS_MC
+        SET V_PASSWORD_HASH = #{vPasswordHash}
+        WHERE V_EMAIL = #{vEmail}
+    </update>
+
+    <!-- PasswordResetToken operations -->
+    <resultMap id="PasswordResetTokenResultMap" type="com.qualitas.portal.fraudes.account.domain.model.PasswordResetToken">
+        <id property="iIdToken" column="I_ID_TOKEN"/>
+        <result property="vToken" column="V_TOKEN"/>
+        <result property="vEmail" column="V_EMAIL"/>
+        <result property="dFechaCreacion" column="D_FECHA_CREACION"/>
+        <result property="dFechaExpiracion" column="D_FECHA_EXPIRACION"/>
+        <result property="iUsado" column="I_USADO"/>
+    </resultMap>
+
+    <insert id="crearPasswordResetToken" parameterType="com.qualitas.portal.fraudes.account.domain.model.PasswordResetToken">
+        <selectKey keyProperty="iIdToken" resultType="BigDecimal" order="BEFORE">
+            SELECT C##MULTICOTIZADOR.SEQ_PASSWORD_RESET_TOKENS_MC.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO C##MULTICOTIZADOR.PASSWORD_RESET_TOKENS (
+        I_ID_TOKEN, V_TOKEN, V_EMAIL, D_FECHA_CREACION, D_FECHA_EXPIRACION, I_USADO
+        ) VALUES (
+        #{iIdToken}, #{vToken}, #{vEmail}, #{dFechaCreacion}, #{dFechaExpiracion}, #{iUsado}
+        )
+    </insert>
+
+    <select id="obtenerTokenPorValor" resultMap="PasswordResetTokenResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.PASSWORD_RESET_TOKENS
+        WHERE V_TOKEN = #{token} AND I_USADO = 0
+    </select>
+
+    <update id="marcarTokenComoUsado">
+        UPDATE C##MULTICOTIZADOR.PASSWORD_RESET_TOKENS
+        SET I_USADO = 1
+        WHERE V_TOKEN = #{token}
+    </update>
+
+    <delete id="eliminarTokensExpirados">
+        DELETE FROM C##MULTICOTIZADOR.PASSWORD_RESET_TOKENS
+        WHERE D_FECHA_EXPIRACION &lt; SYSTIMESTAMP
+    </delete>
+</mapper>

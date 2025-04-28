@@ -16,6 +16,7 @@
         <result property="iUsuarioCreacion" column="I_USUARIO_CREACION"/>
     </resultMap>
 
+
     <!-- Insertar una nueva cotización -->
     <insert id="crearCotizacion" parameterType="com.qualitas.portal.fraudes.account.domain.model.Cotizacion">
         INSERT INTO C##MULTICOTIZADOR.T_COTIZACION_FR_MC (
@@ -57,19 +58,20 @@
         WHERE I_COTIZACION_ID = #{id}
     </select>
 
-    <!-- Actualizar una cotización -->
     <update id="actualizarCotizacion" parameterType="com.qualitas.portal.fraudes.account.domain.model.Cotizacion">
         UPDATE C##MULTICOTIZADOR.T_COTIZACION_FR_MC
-        SET I_CATEGORIA_VEHICULO_CLAVE = #{iCategoriaVehiculoClave},
-            I_TIPO_SEGURO_CLAVE = #{iTipoSeguroClave},
-            I_USO_CLAVE = #{iUsoClave},
-            I_TIPO_AUTO_CLAVE = #{iTipoAutoClave},
-            I_AUTO_CLAVE = #{iAutoClave},
-            I_PERSONA_CLAVE = #{iPersonaClave},
-            D_FECHA_CREACION = #{dFechaCreacion},
-            I_USUARIO_CREACION = #{iUsuarioCreacion}
+        SET I_CATEGORIA_VEHICULO_CLAVE = #{iCategoriaVehiculoClave, jdbcType=NUMERIC},
+            I_TIPO_SEGURO_CLAVE = #{iTipoSeguroClave, jdbcType=NUMERIC},
+            I_USO_CLAVE = #{iUsoClave, jdbcType=NUMERIC},
+            I_TIPO_AUTO_CLAVE = #{iTipoAutoClave, jdbcType=NUMERIC},
+            I_AUTO_CLAVE = #{iAutoClave, jdbcType=NUMERIC},
+            I_PERSONA_CLAVE = #{iPersonaClave, jdbcType=NUMERIC},
+            D_FECHA_CREACION = #{dFechaCreacion, jdbcType=DATE},
+            I_USUARIO_CREACION = #{iUsuarioCreacion, jdbcType=VARCHAR},
+            B_CATALOGO_DATO = #{bCatalogoDato, jdbcType=NUMERIC}
         WHERE I_COTIZACION_ID = #{iCotizacionId}
     </update>
+
 
     <!-- Eliminar una cotización -->
     <delete id="eliminarCotizacion" parameterType="java.math.BigDecimal">
@@ -77,18 +79,106 @@
         WHERE I_COTIZACION_ID = #{id}
     </delete>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- CATALOGO Y RUTINA -->
+
+    <select id="listarCotizacionesPaginadas" parameterType="map" resultMap="CotizacionResultMap">
+        SELECT * FROM (
+        SELECT
+        I_COTIZACION_ID,
+        I_CATEGORIA_VEHICULO_CLAVE,
+        I_TIPO_SEGURO_CLAVE,
+        I_USO_CLAVE,
+        I_TIPO_AUTO_CLAVE,
+        I_AUTO_CLAVE,
+        I_PERSONA_CLAVE,
+        D_FECHA_CREACION,
+        I_USUARIO_CREACION,
+        ROW_NUMBER() OVER (ORDER BY I_COTIZACION_ID DESC) AS rn
+        FROM C##MULTICOTIZADOR.T_COTIZACION_FR_MC
+        WHERE B_CATALOGO_DATO = 1  <!-- Filtro para B_CATALOGO_DATO = 1 -->
+        )
+        WHERE rn BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+    </select>
+
+    <select id="contarTotalCotizaciones" resultType="int">
+        SELECT COUNT(*)
+        FROM C##MULTICOTIZADOR.T_COTIZACION_FR_MC
+        WHERE B_CATALOGO_DATO = 1  <!-- Filtro consistente con la consulta anterior -->
+    </select>
+
+
+    <select id="listarCotizacionesSinPaginado" resultMap="CotizacionResultMap">
+        SELECT
+            I_COTIZACION_ID,
+            I_CATEGORIA_VEHICULO_CLAVE,
+            I_TIPO_SEGURO_CLAVE,
+            I_USO_CLAVE,
+            I_TIPO_AUTO_CLAVE,
+            I_AUTO_CLAVE,
+            I_PERSONA_CLAVE,
+            D_FECHA_CREACION,
+            I_USUARIO_CREACION
+        FROM C##MULTICOTIZADOR.T_COTIZACION_FR_MC
+        WHERE B_CATALOGO_DATO = 1
+        ORDER BY I_COTIZACION_ID DESC
+    </select>
+
     <!-- Listar todas las cotizaciones -->
     <select id="listarTodasLasCotizaciones" resultMap="CotizacionResultMap">
-        SELECT I_COTIZACION_ID,
-               I_CATEGORIA_VEHICULO_CLAVE,
-               I_TIPO_SEGURO_CLAVE,
-               I_USO_CLAVE,
-               I_TIPO_AUTO_CLAVE,
-               I_AUTO_CLAVE,
-               I_PERSONA_CLAVE,
-               D_FECHA_CREACION,
-               I_USUARIO_CREACION
+        SELECT
+            I_COTIZACION_ID,
+            I_CATEGORIA_VEHICULO_CLAVE,
+            I_TIPO_SEGURO_CLAVE,
+            I_USO_CLAVE,
+            I_TIPO_AUTO_CLAVE,
+            I_AUTO_CLAVE,
+            I_PERSONA_CLAVE,
+            D_FECHA_CREACION,
+            I_USUARIO_CREACION
         FROM C##MULTICOTIZADOR.T_COTIZACION_FR_MC
+        WHERE B_CATALOGO_DATO = 1
     </select>
+
+
+
+    <insert id="crearCotizacionCatalogo" parameterType="com.qualitas.portal.fraudes.account.domain.model.Cotizacion">
+        INSERT INTO C##MULTICOTIZADOR.T_COTIZACION_FR_MC (
+        I_CATEGORIA_VEHICULO_CLAVE,
+        I_TIPO_SEGURO_CLAVE,
+        I_USO_CLAVE,
+        I_TIPO_AUTO_CLAVE,
+        I_AUTO_CLAVE,
+        I_PERSONA_CLAVE,
+        D_FECHA_CREACION,
+        I_USUARIO_CREACION,
+        B_CATALOGO_DATO  <!-- Asegúrate de que el nombre de la columna sea correcto -->
+        ) VALUES (
+        #{iCategoriaVehiculoClave, jdbcType=NUMERIC},
+        #{iTipoSeguroClave, jdbcType=NUMERIC},
+        #{iUsoClave, jdbcType=NUMERIC},
+        #{iTipoAutoClave, jdbcType=NUMERIC},
+        #{iAutoClave, jdbcType=NUMERIC},
+        #{iPersonaClave, jdbcType=NUMERIC},
+        #{dFechaCreacion, jdbcType=DATE},
+        #{iUsuarioCreacion, jdbcType=VARCHAR},
+        #{bCatalogoDato, jdbcType=NUMERIC} <!-- Valor fijo asignado directamente -->
+        )
+        <selectKey keyProperty="iCotizacionId" resultType="java.math.BigDecimal" order="AFTER">
+            SELECT SEQ_COTIZACION_ID_MC.CURRVAL FROM dual
+        </selectKey>
+    </insert>
 
 </mapper>

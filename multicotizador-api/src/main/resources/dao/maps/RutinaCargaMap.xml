@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.Infrastructure.dao.RutinaCargaDao">
+
+
+    <!-- Mapeo del resultado de la consulta, mapeando las columnas de la tabla a las propiedades de la clase RutinaCarga -->
+    <resultMap id="RutinaCargaResultMap" type="com.qualitas.portal.fraudes.account.domain.model.RutinaCarga">
+        <id column="I_RUTINA_CARGA_ID" property="iRutinaCargaId" jdbcType="DECIMAL"/>
+        <result column="V_PORTAL" property="vPortal" jdbcType="VARCHAR"/>
+        <result column="I_DATOS_OBTENIDOS" property="iDatosObtenidos" jdbcType="NUMERIC"/>
+        <result column="D_PROGRAMACION" property="dProgramacion" jdbcType="TIMESTAMP"/>
+        <result column="V_ESTATUS" property="vEstatus" jdbcType="VARCHAR"/>
+        <result column="B_HABILITADO" property="bHabilitado" jdbcType="NUMERIC"/>
+        <result column="D_FECHA_ACTUALIZACION" property="dFechaActualizacion" jdbcType="TIMESTAMP"/>
+        <result column="D_INICIO_EJECUCION" property="dInicioEjecucion" jdbcType="TIMESTAMP"/>
+        <result column="D_FIN_EJECUCION" property="dFinEjecucion" jdbcType="TIMESTAMP"/>
+        <result column="I_TIEMPO_EJECUCION" property="lTiempoEjecucion" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <!-- Insertar una nueva rutina de carga -->
+    <insert id="crearRutinaCarga" parameterType="com.qualitas.portal.fraudes.account.domain.model.RutinaCarga" useGeneratedKeys="true" keyProperty="iRutinaCargaId">
+        INSERT INTO T_RUTINAS_CARGA (
+        V_PORTAL, I_DATOS_OBTENIDOS , D_PROGRAMACION, V_ESTATUS ,D_FECHA_ACTUALIZACION, B_HABILITADO
+        ) VALUES (
+                     #{vPortal},
+                     #{iDatosObtenidos},
+                     #{dProgramacion},
+                     #{vEstatus},
+                     #{dFechaActualizacion},
+                     #{bHabilitado}
+                 )
+        <selectKey keyProperty="iRutinaCargaId" resultType="BigDecimal" order="AFTER">
+            SELECT SEQ_RUTINA_CARGA_ID.CURRVAL FROM dual
+        </selectKey>
+    </insert>
+
+
+
+    <!-- Obtener una rutina de carga por ID -->
+    <!-- Obtener una rutina de carga por ID -->
+    <select id="obtenerRutinaCarga" parameterType="java.math.BigDecimal" resultMap="RutinaCargaResultMap">
+        SELECT
+            I_RUTINA_CARGA_ID,
+            V_PORTAL,
+            D_PROGRAMACION,
+            V_ESTATUS,
+            D_FECHA_ACTUALIZACION,
+            B_HABILITADO,
+            D_INICIO_EJECUCION,
+            D_FIN_EJECUCION,
+            I_TIEMPO_EJECUCION
+        FROM C##MULTICOTIZADOR.T_RUTINAS_CARGA_MC
+        WHERE I_RUTINA_CARGA_ID = #{id}
+    </select>
+
+
+    <!-- Actualizar una rutina de carga existente -->
+    <update id="actualizarRutinaCarga" parameterType="com.qualitas.portal.fraudes.account.domain.model.RutinaCarga">
+        UPDATE T_RUTINAS_CARGA
+        SET
+            V_PORTAL = #{vPortal},
+            D_FECHA_ACTUAL = #{dFechaActual},
+            V_NRO_DATOS = #{vNRODatos},
+            V_PROGRAMACION = #{vProgramacion},
+            V_ESTATUS = #{vEstatus},
+            V_HABILITADO = #{vHabilitado}
+        WHERE I_RUTINA_CARGA_ID = #{iRutinaCargaId}
+    </update>
+
+    <!-- Listar todas las rutinas de carga -->
+    <select id="listarRutinaCarga" resultMap="RutinaCargaResultMap">
+        SELECT
+            I_RUTINA_CARGA_ID,
+            V_PORTAL,
+            I_DATOS_OBTENIDOS,
+            D_PROGRAMACION,
+            V_ESTATUS,
+            B_HABILITADO,
+            D_FECHA_ACTUALIZACION,
+            D_INICIO_EJECUCION,
+            D_FIN_EJECUCION,
+            I_TIEMPO_EJECUCION
+        FROM C##MULTICOTIZADOR.T_RUTINAS_CARGA_MC
+    </select>
+
+    <!-- Eliminar una rutina de carga por ID -->
+    <delete id="eliminarRutinaCarga" parameterType="java.math.BigDecimal">
+        DELETE FROM T_RUTINAS_CARGA_MC
+        WHERE I_RUTINA_CARGA_ID = #{id}
+    </delete>
+
+
+
+
+    <update id="actualizarDatosObtenidos">
+        UPDATE T_RUTINAS_CARGA_MC
+        SET I_DATOS_OBTENIDOS = #{iDatosObtenidos}
+        WHERE I_RUTINA_CARGA_ID = #{id}
+    </update>
+
+
+
+    <update id="actualizarProgramacion">
+        UPDATE T_RUTINAS_CARGA_MC
+        SET D_PROGRAMACION = #{dProgramacion}
+        WHERE I_RUTINA_CARGA_ID = #{id}
+    </update>
+
+    <update id="actualizarHabilitado">
+        UPDATE T_RUTINAS_CARGA_MC
+        SET B_HABILITADO = #{bHabilitado}
+        WHERE I_RUTINA_CARGA_ID = #{id}
+    </update>
+
+
+
+
+    <update id="registrarInicioEjecucion" parameterType="java.math.BigDecimal">
+        UPDATE C##MULTICOTIZADOR.T_RUTINAS_CARGA_MC
+        SET D_INICIO_EJECUCION = SYSTIMESTAMP
+        WHERE I_RUTINA_CARGA_ID = #{rutinaId}
+    </update>
+
+    <!-- Registrar fin de ejecución (simplificado) -->
+    <update id="registrarFinEjecucion" parameterType="java.math.BigDecimal">
+        UPDATE C##MULTICOTIZADOR.T_RUTINAS_CARGA_MC
+        SET D_FIN_EJECUCION = SYSTIMESTAMP
+        WHERE I_RUTINA_CARGA_ID = #{rutinaId}
+    </update>
+
+
+    <select id="obtenerTiempoEjecucion" parameterType="java.math.BigDecimal" resultType="long">
+        SELECT
+            EXTRACT(DAY FROM (D_FIN_EJECUCION - D_INICIO_EJECUCION)) * 86400000 +
+            EXTRACT(HOUR FROM (D_FIN_EJECUCION - D_INICIO_EJECUCION)) * 3600000 +
+            EXTRACT(MINUTE FROM (D_FIN_EJECUCION - D_INICIO_EJECUCION)) * 60000 +
+            EXTRACT(SECOND FROM (D_FIN_EJECUCION - D_INICIO_EJECUCION)) * 1000
+        FROM C##MULTICOTIZADOR.T_RUTINAS_CARGA_MC
+        WHERE I_RUTINA_CARGA_ID = #{rutinaId}
+          AND D_INICIO_EJECUCION IS NOT NULL
+          AND D_FIN_EJECUCION IS NOT NULL
+          AND D_FIN_EJECUCION > D_INICIO_EJECUCION
+    </select>
+
+    <!-- En RutinaCargaDao.xml -->
+    <update id="actualizarTiempoEjecucion" parameterType="java.math.BigDecimal">
+        UPDATE C##MULTICOTIZADOR.T_RUTINAS_CARGA_MC
+        SET I_TIEMPO_EJECUCION =
+                EXTRACT(DAY FROM (D_FIN_EJECUCION - D_INICIO_EJECUCION)) * 86400000 +
+                EXTRACT(HOUR FROM (D_FIN_EJECUCION - D_INICIO_EJECUCION)) * 3600000 +
+                EXTRACT(MINUTE FROM (D_FIN_EJECUCION - D_INICIO_EJECUCION)) * 60000 +
+                EXTRACT(SECOND FROM (D_FIN_EJECUCION - D_INICIO_EJECUCION)) * 1000
+        WHERE I_RUTINA_CARGA_ID = #{rutinaId}
+    </update>
+</mapper>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qualitas.portal.fraudes.account.infrastructure.dao.ResultadoCotizacionDao">
+
+    <!-- Mapeo de la tabla RESULTADO_COTIZACION al modelo ResultadoCotizacion -->
+    <resultMap id="ResultadoCotizacionResultMap" type="com.qualitas.portal.fraudes.account.domain.model.ResultadoCotizacion">
+        <id property="iResultadoCotizacionId" column="I_RESULTADO_COTIZACION_ID"/>
+        <result property="iCotizacionClave" column="I_COTIZACION_CLAVE"/>
+        <result property="vNombreSeguro" column="V_NOMBRE_SEGURO"/>
+        <result property="vNombreCobertura" column="V_NOMBRE_COBERTURA"/>
+        <result property="dPrecioTotal" column="D_PRECIO_TOTAL"/>
+        <result property="vPlazoCobertura" column="V_PLAZO_COBERTURA"/>
+        <result property="dPrimerPago" column="D_PRIMER_PAGO"/>
+        <result property="dPagosResta" column="D_PAGOS_RESTA"/>
+        <result property="iVigencia" column="I_VIGENCIA"/>
+        <result property="dDanosTerceros" column="D_DANOS_TERCEROS"/>
+        <result property="iRoboTotal" column="I_ROBO_TOTAL"/>
+        <result property="iRoboParcial" column="I_ROBO_PARCIAL"/>
+        <result property="dGastosMedicos" column="D_GASTOS_MEDICOS"/>
+        <result property="iDanosLlanta" column="I_DANOS_LLANTA"/>
+        <result property="iDanoCristal" column="I_DANO_CRISTAL"/>
+        <result property="iReposicionLlave" column="I_REPOSICION_LLAVE"/>
+        <result property="bPerdidaTotal" column="B_PERDIDA_TOTAL"/>
+        <result property="dFallecimiento" column="D_FALLECIMENTO"/>
+        <result property="bDefensaLegal" column="B_DEFENSA_LEGAL"/>
+        <result property="bAsistencialVialCarretera" column="B_ASISTENCIAL_VIAL_CARRETERA"/>
+        <result property="iDanoVehiculo" column="I_DANO_VEHICULO"/>
+        <result property="dFechaCreacion" column="D_FECHA_CREACION"/>
+    </resultMap>
+
+
+
+    <!-- Consulta para crear un ResultadoCotizacion -->
+    <insert id="crearResultadoCotizacionSinCatalogo" parameterType="com.qualitas.portal.fraudes.account.domain.model.ResultadoCotizacion" useGeneratedKeys="true" keyProperty="iResultadoCotizacionId">
+        INSERT INTO C##MULTICOTIZADOR.RESULTADO_COTIZACION (
+        I_COTIZACION_CLAVE, V_NOMBRE_SEGURO, V_NOMBRE_COBERTURA, D_PRECIO_TOTAL, V_PLAZO_COBERTURA,
+        D_PRIMER_PAGO, D_PAGOS_RESTA, I_VIGENCIA, D_DANOS_TERCEROS, I_ROBO_TOTAL, I_ROBO_PARCIAL,
+        D_GASTOS_MEDICOS, I_DANOS_LLANTA, I_DANO_CRISTAL, I_REPOSICION_LLAVE, B_PERDIDA_TOTAL,
+        D_FALLECIMENTO, B_DEFENSA_LEGAL, B_ASISTENCIAL_VIAL_CARRETERA, I_DANO_VEHICULO
+        ) VALUES (
+        #{iCotizacionClave}, #{vNombreSeguro}, #{vNombreCobertura}, #{dPrecioTotal}, #{vPlazoCobertura},
+        #{dPrimerPago}, #{dPagosResta}, #{iVigencia}, #{dDanosTerceros}, #{iRoboTotal}, #{iRoboParcial},
+        #{dGastosMedicos}, #{iDanosLlanta}, #{iDanoCristal}, #{iReposicionLlave}, #{bPerdidaTotal},
+        #{dFallecimiento}, #{bDefensaLegal}, #{bAsistencialVialCarretera}, #{iDanoVehiculo}
+        )
+        <selectKey keyProperty="iResultadoCotizacionId" resultType="BigDecimal" order="AFTER">
+            SELECT SEQ_RESULTADO_COTIZACION_ID.CURRVAL FROM dual
+        </selectKey>
+    </insert>
+
+    <!-- Consulta para obtener un ResultadoCotizacion por ID -->
+    <select id="obtenerResultadoCotizacion" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_RESULTADO_COTIZACION_ID = #{id}
+    </select>
+
+    <!-- Consulta para actualizar un ResultadoCotizacion -->
+    <update id="actualizarResultadoCotizacion" parameterType="com.qualitas.portal.fraudes.account.domain.model.ResultadoCotizacion">
+        UPDATE C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        SET
+            I_COTIZACION_CLAVE = #{iCotizacionClave},
+            V_NOMBRE_SEGURO = #{vNombreSeguro},
+            V_NOMBRE_COBERTURA = #{vNombreCobertura},
+            D_PRECIO_TOTAL = #{dPrecioTotal},
+            V_PLAZO_COBERTURA = #{vPlazoCobertura},
+            D_PRIMER_PAGO = #{dPrimerPago},
+            D_PAGOS_RESTA = #{dPagosResta},
+            I_VIGENCIA = #{iVigencia},
+            D_DANOS_TERCEROS = #{dDanosTerceros},
+            I_ROBO_TOTAL = #{iRoboTotal},
+            I_ROBO_PARCIAL = #{iRoboParcial},
+            D_GASTOS_MEDICOS = #{dGastosMedicos},
+            I_DANOS_LLANTA = #{iDanosLlanta},
+            I_DANO_CRISTAL = #{iDanoCristal},
+            I_REPOSICION_LLAVE = #{iReposicionLlave},
+            B_PERDIDA_TOTAL = #{bPerdidaTotal},
+            D_FALLECIMENTO = #{dFallecimiento},
+            B_DEFENSA_LEGAL = #{bDefensaLegal},
+            B_ASISTENCIAL_VIAL_CARRETERA = #{bAsistencialVialCarretera},
+            I_DANO_VEHICULO = #{iDanoVehiculo},
+            D_FECHA_CREACION = #{dFechaCreacion}
+        WHERE I_RESULTADO_COTIZACION_ID = #{iResultadoCotizacionId}
+    </update>
+
+    <!-- Consulta para listar todos los ResultadoCotizacion -->
+    <select id="listarResultadosCotizacion" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+    </select>
+
+    <!-- Consulta para eliminar un ResultadoCotizacion por ID -->
+    <delete id="eliminarResultadoCotizacion" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_RESULTADO_COTIZACION_ID = #{id}
+    </delete>
+
+    <!--No se utiliza, se remplaza por el filtro-->
+    <select id="obtenerResultadoPorCotizacionClave" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
+        SELECT *
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+          AND (V_NOMBRE_SEGURO != 'Completado')
+    </select>
+
+    <select id="buscarPorNombreSeguroYCotizacionClave" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE V_NOMBRE_SEGURO = #{nombreSeguro}
+          AND I_COTIZACION_CLAVE = #{cotizacionClave}
+    </select>
+
+    <select id="obtenerNombresSegurosUnicos" resultType="java.lang.String">
+        SELECT DISTINCT V_NOMBRE_SEGURO
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+    </select>
+
+
+    <select id="filtrarResultadosCotizacion" parameterType="map" resultMap="ResultadoCotizacionResultMap">
+        SELECT *
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE 1 = 1
+        <!-- Filtro por clave de cotización -->
+        <if test="cotizacionClave != null">
+            AND I_COTIZACION_CLAVE = #{cotizacionClave}
+        </if>
+        <!-- Excluir registros con V_NOMBRE_SEGURO = 'Completado' o 'Error' -->
+        AND V_NOMBRE_COBERTURA NOT IN ('Completado', 'Error')
+        <!-- Filtro por nombre de seguro -->
+        <if test="vNombreSeguro != null and vNombreSeguro != ''">
+            AND V_NOMBRE_SEGURO = #{vNombreSeguro}
+        </if>
+        <!-- Filtro por nombre de cobertura -->
+        <if test="vNombreCobertura != null and vNombreCobertura != ''">
+            AND V_NOMBRE_COBERTURA = #{vNombreCobertura}
+        </if>
+    </select>
+
+
+
+
+
+    <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
+        SELECT CASE
+                   WHEN COUNT(*) > 0 THEN 1
+                   ELSE 0
+                   END
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+    </select>
+
+
+    <!--pRUEBA LOCAL
+                  <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
+                      SELECT CASE
+                                 WHEN SUM(CASE WHEN V_NOMBRE_COBERTURA = 'Error' THEN 1 ELSE 0 END) = 5 THEN 1
+                                 ELSE 0
+                                 END AS resultado
+                      FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+                      WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+
+                  </select>
+      -->
+
+              <!-- Version de la ultima version que tenia
+                  <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">
+                      SELECT CASE
+                                 WHEN COUNT(*) > 0 THEN 1
+                                 ELSE 0
+                                 END
+                      FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+                      WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
+                        AND V_NOMBRE_COBERTURA = 'Completado'
+                  </select>
+              -->
+
+
+
+
+    <select id="contarRegistrosPorRutina" parameterType="java.math.BigDecimal" resultType="int">
+        SELECT COUNT(*) AS TOTAL_REGISTROS
+        FROM "C##MULTICOTIZADOR".RESULTADO_COTIZACION
+        WHERE I_RUTINA_CARGA_CLAVE = #{rutinaClave}
+          AND B_CATALOGO_DATO = 1
+    </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Catalogo y rutina-->
+
+
+
+    <!--Obtener resultado de catalogo -->
+    <select id="obtenerResultadosConCatalogo" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE B_CATALOGO_DATO = 1
+        ORDER BY D_FECHA_CREACION DESC
+    </select>
+
+
+    <!-- Consulta para crear un ResultadoCotizacionCatalogo -->
+    <insert id="crearResultadoCotizacion" parameterType="com.qualitas.portal.fraudes.account.domain.model.ResultadoCotizacion" useGeneratedKeys="true" keyProperty="iResultadoCotizacionId">
+        INSERT INTO C##MULTICOTIZADOR.RESULTADO_COTIZACION (
+        I_COTIZACION_CLAVE, V_NOMBRE_SEGURO, V_NOMBRE_COBERTURA, D_PRECIO_TOTAL, V_PLAZO_COBERTURA,
+        D_PRIMER_PAGO, D_PAGOS_RESTA, I_VIGENCIA, D_DANOS_TERCEROS, I_ROBO_TOTAL, I_ROBO_PARCIAL,
+        D_GASTOS_MEDICOS, I_DANOS_LLANTA, I_DANO_CRISTAL, I_REPOSICION_LLAVE, B_PERDIDA_TOTAL,
+        D_FALLECIMENTO, B_DEFENSA_LEGAL, B_ASISTENCIAL_VIAL_CARRETERA, I_DANO_VEHICULO, I_RUTINA_CARGA_CLAVE, B_CATALOGO_DATO
+        ) VALUES (
+        #{iCotizacionClave}, #{vNombreSeguro}, #{vNombreCobertura}, #{dPrecioTotal}, #{vPlazoCobertura},
+        #{dPrimerPago}, #{dPagosResta}, #{iVigencia}, #{dDanosTerceros}, #{iRoboTotal}, #{iRoboParcial},
+        #{dGastosMedicos}, #{iDanosLlanta}, #{iDanoCristal}, #{iReposicionLlave}, #{bPerdidaTotal},
+        #{dFallecimiento}, #{bDefensaLegal}, #{bAsistencialVialCarretera}, #{iDanoVehiculo}, #{iRutinaCargaClave},
+        #{bCatalogoDato}
+        )
+        <selectKey keyProperty="iResultadoCotizacionId" resultType="BigDecimal" order="AFTER">
+            SELECT SEQ_RESULTADO_COTIZACION_ID.CURRVAL FROM dual
+        </selectKey>
+    </insert>
+
+    <select id="existeCotizacionCompletadaPorRutina" parameterType="java.math.BigDecimal" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_RUTINA_CARGA_CLAVE = #{rutinaCargaClave}
+          AND V_NOMBRE_COBERTURA = 'Completado'
+    </select>
+    <delete id="eliminarResultadosCotizacionCompletados" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_RUTINA_CARGA_CLAVE = #{rutinaCargaClave}
+          AND V_NOMBRE_COBERTURA = 'Completado'
+    </delete>
+
+
+
+
+
+
+
+
+
+
+    <!-- Dashboard-->
+
+
+
+
+    <!-- Consulta para obtener conteo de resultados exitosos por mes y aseguradora -->
+    <select id="obtenerConteoResultadosPorMes" resultType="map">
+        SELECT
+            TO_CHAR(D_FECHA_CREACION, 'YYYY-MM') AS mes,
+            V_NOMBRE_SEGURO AS aseguradora,
+            COUNT(*) AS cantidad
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE B_CATALOGO_DATO = 1
+          AND V_NOMBRE_COBERTURA != 'Error'
+      AND V_NOMBRE_SEGURO IN ('Chubb', 'AXA', 'GNP', 'HDI', 'Mapfre')
+        GROUP BY TO_CHAR(D_FECHA_CREACION, 'YYYY-MM'), V_NOMBRE_SEGURO
+        ORDER BY mes, aseguradora
+    </select>
+
+    <!-- Consulta para obtener estadísticas de coberturas del mes actual -->
+    <select id="obtenerEstadisticasCoberturasMesActual" resultType="com.qualitas.portal.fraudes.account.application.dto.response.EstadisticasCoberturaDTO">
+        SELECT
+            SUM(CASE WHEN V_NOMBRE_COBERTURA != 'Error' THEN 1 ELSE 0 END) AS cantidadValida,
+            SUM(CASE WHEN V_NOMBRE_COBERTURA = 'Error' THEN 1 ELSE 0 END) AS cantidadError
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE B_CATALOGO_DATO = 1
+          AND V_NOMBRE_SEGURO IN ('Chubb', 'AXA', 'GNP', 'HDI', 'Mapfre')
+          AND TO_CHAR(D_FECHA_CREACION, 'YYYY-MM') = TO_CHAR(SYSDATE, 'YYYY-MM')
+    </select>
+
+    </mapper>

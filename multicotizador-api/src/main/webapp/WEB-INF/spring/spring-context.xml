@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+           http://www.springframework.org/schema/task
+           http://www.springframework.org/schema/task/spring-task-4.3.xsd"
+       default-autowire="byName">
+
+    <!-- Configuración del scheduler para ejecuciones automáticas -->
+
+
+    <task:annotation-driven scheduler="scheduledExecutor" />
+    <task:scheduler id="scheduledExecutor" pool-size="5"/>
+
+    <!-- Configuración simplificada del RestTemplate -->
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <property name="requestFactory">
+            <bean class="org.springframework.http.client.SimpleClientHttpRequestFactory">
+                <property name="connectTimeout" value="5000"/>
+                <property name="readTimeout" value="15000"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:application.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Scans the classpath of this application for @Components to deploy as beans -->
+    <context:component-scan base-package="com.qualitas.portal"/>
+
+    <!-- Configures the @Controller programming model -->
+
+    <!-- filtros para vulnerabilidades
+    <bean id="FiltroCRLF" class="com.qualitas.portal.accountapi.configuracion.filter.FiltroCRLF"/>
+    <bean id="FiltroXSS" class="com.qualitas.portal.accountapi.configuracion.filter.FiltroXSS" />
+    <bean id="FiltroJWT" class="com.qualitas.portal.accountapi.configuracion.filter.FiltroJWT" />
+    <bean class="com.qualitas.portal.accountapi.configuracion.cors.RestConfig" /> -->
+    <!-- Configuración para manejo de archivos multipart -->
+    <!-- Habilita el soporte para multipart -->
+
+
+    <!-- Configures the @Controller programming model -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- Configuración para manejo de archivos multipart -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 50MB max -->
+        <property name="maxUploadSize" value="52428800"/>
+        <!-- 4MB before writing to disk -->
+        <property name="maxInMemorySize" value="4194304"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="resolveLazily" value="true"/>
+    </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
+        <property name="prefix" value="/WEB-INF/views/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+</beans>
