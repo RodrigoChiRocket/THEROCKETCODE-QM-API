@@ -12,6 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -48,11 +53,47 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated() // All other requests just need authentication
+                // Endpoints públicos de autenticación
+                .antMatchers(
+                        "/api/auth/login",
+                        "/api/auth/registrar",
+                        "/api/auth/actualizar-contrasena",
+                        "/api/auth/solicitar-restablecimiento",
+                        "/api/auth/request",
+                        "/api/auth/reset",
+                        "/api/auth/validate-token"
+                ).permitAll()
+
+                // Endpoints públicos de los controladores CRUD
+                .antMatchers(
+                        "/autodescripcion/**",
+                        "/automarca/**",
+                        "/automodelo/**",
+                        "/uso/**",
+                        "/tiposeguro/**",
+                        "/tipoauto/**"
+                ).permitAll()
+
+                // Todas las demás rutas requieren autenticación
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .cors().configurationSource(corsConfigurationSource());
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*")); // Permite cualquier origen
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("*")); // Permite cualquier header
+        configuration.setAllowCredentials(false); // No requiere credenciales
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Aplica a todas las rutas
+        return source;
     }
 }

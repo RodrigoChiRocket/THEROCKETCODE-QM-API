@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @CrossOrigin(origins = "*")
-
 @RequestMapping("/rutina-carga")
 public class RutinaCargaController {
 

@@ -166,7 +166,7 @@ public class AutenticacionControlador {
 
 
 
-    @CrossOrigin(origins = "*")
+
     @PostMapping("/request")
     public ResponseEntity<?> requestPasswordReset(@RequestParam String email) {
         try {
@@ -187,7 +187,6 @@ public class AutenticacionControlador {
     }
 
 
-    @CrossOrigin(origins = "*")
     @PostMapping("/reset")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDTO request) {
         try {
