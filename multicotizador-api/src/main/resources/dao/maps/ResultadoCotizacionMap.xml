@@ -135,7 +135,42 @@
     </select>
 
 
+    <select id="filtrarResultadosCotizacionError" parameterType="map" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM (
+        -- Primera parte: registros que no son 'Error'
+        SELECT *, 0 as orden
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE 1 = 1
+        <if test="cotizacionClave != null">
+            AND I_COTIZACION_CLAVE = #{cotizacionClave}
+        </if>
+        AND V_NOMBRE_COBERTURA NOT IN ('Completado', 'Error')
+        <if test="vNombreSeguro != null and vNombreSeguro != ''">
+            AND V_NOMBRE_SEGURO = #{vNombreSeguro}
+        </if>
+        <if test="vNombreCobertura != null and vNombreCobertura != ''">
+            AND V_NOMBRE_COBERTURA = #{vNombreCobertura}
+        </if>
 
+        UNION ALL
+
+        -- Segunda parte: solo registros 'Error'
+        SELECT *, 1 as orden
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE 1 = 1
+        <if test="cotizacionClave != null">
+            AND I_COTIZACION_CLAVE = #{cotizacionClave}
+        </if>
+        AND V_NOMBRE_COBERTURA = 'Error'
+        <if test="vNombreSeguro != null and vNombreSeguro != ''">
+            AND V_NOMBRE_SEGURO = #{vNombreSeguro}
+        </if>
+        <if test="vNombreCobertura != null and vNombreCobertura != ''">
+            AND V_NOMBRE_COBERTURA = #{vNombreCobertura}
+        </if>
+        )
+        ORDER BY orden, V_NOMBRE_COBERTURA
+    </select>
 
 
     <select id="verificarEstadoCotizacion" parameterType="java.math.BigDecimal" resultType="boolean">

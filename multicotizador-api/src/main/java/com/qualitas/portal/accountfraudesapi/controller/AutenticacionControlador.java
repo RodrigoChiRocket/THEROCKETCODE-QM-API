@@ -190,6 +190,9 @@ public class AutenticacionControlador {
     @PostMapping("/reset")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDTO request) {
         try {
+
+            boolean isValid = passwordResetService.validarToken(request.getToken(), request.getEmail());
+
             passwordResetService.resetPassword(request.getToken(), request.getEmail(), request.getNewPassword());
 
             return Response.crearRespuesta()

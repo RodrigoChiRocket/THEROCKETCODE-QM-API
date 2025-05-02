@@ -73,7 +73,6 @@
     </update>
 
 
-    <!-- Eliminar una cotización -->
     <delete id="eliminarCotizacion" parameterType="java.math.BigDecimal">
         DELETE FROM C##MULTICOTIZADOR.T_COTIZACION_FR_MC
         WHERE I_COTIZACION_ID = #{id}
@@ -85,8 +84,10 @@
 
 
 
-
-
+    <delete id="eliminarResultadosRelacionados" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_COTIZACION_CLAVE = #{id}
+    </delete>
 
 
 

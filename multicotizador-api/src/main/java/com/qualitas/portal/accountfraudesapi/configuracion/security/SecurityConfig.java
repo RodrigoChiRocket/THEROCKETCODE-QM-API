@@ -64,7 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/auth/solicitar-restablecimiento",
                         "/api/auth/request",
                         "/api/auth/reset",
-                        "/api/auth/validate-token"
+                        "/api/auth/validate-token",
+                        "/api/catalogo/**"
                 ).permitAll()
 
                 // Endpoints públicos de los controladores CRUD
