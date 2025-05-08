@@ -122,8 +122,6 @@
         <if test="cotizacionClave != null">
             AND I_COTIZACION_CLAVE = #{cotizacionClave}
         </if>
-        <!-- Excluir registros con V_NOMBRE_SEGURO = 'Completado' o 'Error' -->
-        AND V_NOMBRE_COBERTURA NOT IN ('Completado', 'Error')
         <!-- Filtro por nombre de seguro -->
         <if test="vNombreSeguro != null and vNombreSeguro != ''">
             AND V_NOMBRE_SEGURO = #{vNombreSeguro}
@@ -135,6 +133,7 @@
     </select>
 
 
+    <!-- ERROR-->
     <select id="filtrarResultadosCotizacionError" parameterType="map" resultMap="ResultadoCotizacionResultMap">
         SELECT * FROM (
         -- Primera parte: registros que no son 'Error'
@@ -275,6 +274,11 @@
         WHERE I_RUTINA_CARGA_CLAVE = #{rutinaCargaClave}
           AND V_NOMBRE_COBERTURA = 'Completado'
     </select>
+    <delete id="eliminarResultadosPorRutinaYEstado" parameterType="java.math.BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_RUTINA_CARGA_CLAVE = #{rutinaCargaClave}
+          AND V_NOMBRE_COBERTURA IN ('Completado', 'Error')
+    </delete>
     <delete id="eliminarResultadosCotizacionCompletados" parameterType="java.math.BigDecimal">
         DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_RUTINA_CARGA_CLAVE = #{rutinaCargaClave}
@@ -283,10 +287,22 @@
 
 
 
+    <select id="obtenerResultadosPorCotizacionClaveYCatalogo" parameterType="BigDecimal" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_COTIZACION_CLAVE = #{cotizacionClave} AND B_CATALOGO_DATO = 1
+    </select>
+
+    <delete id="eliminarResultadosCotizacionPorClave" parameterType="BigDecimal">
+        DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_COTIZACION_CLAVE = #{cotizacionClave} AND B_CATALOGO_DATO = 1
+    </delete>
 
 
-
-
+    <select id="obtenerResultadosPorRutinaYCatalogo" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
+        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        WHERE I_RUTINA_CARGA_CLAVE = #{rutinaClave}
+          AND B_CATALOGO_DATO = 1
+    </select>
 
 
 

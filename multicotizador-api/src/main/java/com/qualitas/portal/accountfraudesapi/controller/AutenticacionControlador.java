@@ -68,10 +68,10 @@ public class AutenticacionControlador {
 
             // Obtener detalles del usuario
             AuthResponseDTO authResponse = autenticacionService.autenticarUsuario(loginRequest);
-
+            String role= authResponse.getRole();
             // Generar token
             String token = jwtTokenUtil.generateToken(
-                    loginRequest.getUsername()
+                    loginRequest.getUsername(), role
             );
 
             // Preparar respuesta

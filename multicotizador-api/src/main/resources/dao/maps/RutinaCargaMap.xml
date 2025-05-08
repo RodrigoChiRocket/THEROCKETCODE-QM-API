@@ -131,6 +131,13 @@
     </update>
 
 
+    <update id="actualizarEstatus">
+        UPDATE T_RUTINAS_CARGA_MC
+            SET V_ESTATUS= #{vEstatus}
+        WHERE I_RUTINA_CARGA_ID= #{id}
+    </update>
+
+
     <select id="obtenerTiempoEjecucion" parameterType="java.math.BigDecimal" resultType="long">
         SELECT
             EXTRACT(DAY FROM (D_FIN_EJECUCION - D_INICIO_EJECUCION)) * 86400000 +

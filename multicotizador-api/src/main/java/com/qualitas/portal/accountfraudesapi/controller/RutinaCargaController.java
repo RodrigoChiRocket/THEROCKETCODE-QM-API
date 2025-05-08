@@ -1,5 +1,6 @@
 package com.qualitas.portal.accountfraudesapi.controller;
 
+import com.qualitas.portal.accountfraudesapi.response.Response;
 import com.qualitas.portal.fraudes.account.application.dto.RutinaCargaDTO;
 import com.qualitas.portal.fraudes.account.application.dto.response.CotizacionCompletaResponseDTO;
 import com.qualitas.portal.fraudes.account.application.dto.response.EstadisticasTiempoEjecucionDTO;
@@ -45,13 +46,6 @@ public class RutinaCargaController {
 
 @Autowired
 private ResultadoCotizacionService resultadoCotizacionService;
-
-    // Método programado que se ejecuta cada minuto para verificar las rutinas
-
-
-
-
-    // Endpoints REST para gestión manual de rutinas
     @PostMapping
     public ResponseEntity<RutinaCargaDTO> crearRutina(@RequestBody RutinaCargaDTO rutinaCargaDTO) {
         logger.info("Creando nueva rutina para portal: {}", rutinaCargaDTO.getvPortal());
@@ -111,6 +105,12 @@ private ResultadoCotizacionService resultadoCotizacionService;
             @RequestParam("valor") Integer habilitado) {
         logger.info("Actualizando estado habilitado para rutina ID: {}", id);
         rutinaCargaService.actualizarHabilitado(id, habilitado);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("{id}/estatus")
+    public ResponseEntity<Void> actualizarEstatus(@PathVariable BigDecimal id, @RequestParam("estatus") String estatus){
+        rutinaCargaService.actualizarEstatus(id, estatus);
         return ResponseEntity.noContent().build();
     }
 
@@ -197,15 +197,36 @@ private ResultadoCotizacionService resultadoCotizacionService;
     }
 
     @GetMapping("/enviar/mapfre")
-    public ResponseEntity<String> enviarDirectoMapfre() {
-        BigDecimal rutinaId = new BigDecimal(2);
-        rutinaCargaService.registrarInicioEjecucion(rutinaId);
+    public ResponseEntity<?> enviarDirectoMapfre() {
+        logger.info("[MANUAL] Solicitado envío MANUAL a Mapfre");
+        try {
+            // Registrar inicio
+            BigDecimal rutinaId = new BigDecimal(2);
+            rutinaCargaService.registrarInicioEjecucion(rutinaId);
 
-        List<CotizacionCompletaResponseDTO> cotizaciones = cotizacionService.listarCotizacionesCompletas();
-        ResponseEntity<String> response = enviarCotizaciones("Mapfre", "http://localhost:8005/cotizacion/mapfre", cotizaciones);
+            List<CotizacionCompletaResponseDTO> cotizaciones = cotizacionService.listarCotizacionesCompletas();
+            logger.info("[MANUAL] Obtenidas {} cotizaciones para envío manual a Mapfre", cotizaciones.size());
 
-        rutinaCargaService.verificarYProcesarCotizacionesCompletadas(rutinaId);
-        return response;
+            // Enviar las cotizaciones a Mapfre
+            ResponseEntity<String> response = enviarCotizaciones("Mapfre", "http://localhost:8005/cotizacion/mapfre", cotizaciones);
+
+            // Verificar y procesar completadas
+            rutinaCargaService.verificarYProcesarCotizacionesCompletadas(rutinaId);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                logger.info("[MANUAL] Envío a Mapfre COMPLETADO exitosamente");
+            } else {
+                logger.warn("[MANUAL] Envío a Mapfre completado con estado {}", response.getStatusCode());
+            }
+
+            // Devolver la lista de cotizaciones en lugar de la respuesta del envío
+            return ResponseEntity.ok(cotizaciones);
+
+        } catch (Exception e) {
+            logger.error("[MANUAL] Error en envío manual a Mapfre: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error en envío manual a Mapfre: " + e.getMessage());
+        }
     }
 
     @GetMapping("/enviar/axa")

@@ -86,9 +86,8 @@
 
     <delete id="eliminarResultadosRelacionados" parameterType="java.math.BigDecimal">
         DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
-        WHERE I_COTIZACION_CLAVE = #{id}
+        WHERE I_COTIZACION_CLAVE = #{id, jdbcType=DECIMAL}
     </delete>
-
 
 
 

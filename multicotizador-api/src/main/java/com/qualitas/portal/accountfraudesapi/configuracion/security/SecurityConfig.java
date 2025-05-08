@@ -56,29 +56,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                // Endpoints públicos de autenticación
+                // Permitir acceso público a autenticación y recursos estáticos
                 .antMatchers(
-                        "/api/auth/login",
-                        "/api/auth/registrar",
-                        "/api/auth/actualizar-contrasena",
-                        "/api/auth/solicitar-restablecimiento",
-                        "/api/auth/request",
-                        "/api/auth/reset",
-                        "/api/auth/validate-token",
-                        "/api/catalogo/**"
-                ).permitAll()
-
-                // Endpoints públicos de los controladores CRUD
-                .antMatchers(
+                        "/api/auth/**",
+                        "/api/catalogo/**",
                         "/autodescripcion/**",
                         "/automarca/**",
                         "/automodelo/**",
                         "/uso/**",
                         "/tiposeguro/**",
-                        "/tipoauto/**"
+                        "/tipoauto/**",
+                        "/categoriavehiculo",
+                        "/resultados-cotizacion/filtrar"
                 ).permitAll()
 
-                // Todas las demás rutas requieren autenticación
+                // Proteger solo rutas de dashboard para ADMIN
+                .antMatchers("/dashboard/**").hasRole("ADMIN")
+
+                // Todas las demás rutas requieren autenticación (sin rol específico)
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -94,7 +89,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Arrays.asList("*")); // Permite cualquier origen
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*")); // Permite cualquier header
-        configuration.setAllowCredentials(false); // No requiere credenciales
+        configuration.setAllowCredentials(true); // ← Esto es crucial para el frontend
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Aplica a todas las rutas

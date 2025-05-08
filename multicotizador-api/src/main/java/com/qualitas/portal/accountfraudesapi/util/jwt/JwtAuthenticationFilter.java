@@ -2,6 +2,7 @@ package com.qualitas.portal.accountfraudesapi.util.jwt;
 
 import com.qualitas.portal.accountfraudesapi.configuracion.security.CustomUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -56,6 +56,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             } catch (ExpiredJwtException e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expirado");
+                return;
+            } catch (AccessDeniedException e) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Acceso denegado");
                 return;
             } catch (Exception e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");

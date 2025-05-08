@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -61,21 +62,6 @@ public class ResultadoCotizacionControlador {
         return new ResponseEntity<>(resultadoDTO, HttpStatus.CREATED);
     }
 
-
-
-    @PostMapping("/catalogo")
-    public ResponseEntity<ResultadoCotizacionDTO> crearResultadoCotizacionCatalogo(@RequestBody ResultadoCotizacionDTO dto) {
-        // Loguear los datos del request
-        logger.info("Recibiendo solicitud para crear un resultado de cotización. Datos recibidos:" + dto);
-
-
-        // Procesar la solicitud
-        ResultadoCotizacionDTO resultadoDTO = resultadoCotizacionService.crearResultadoCotizacionCatalogo(dto);
-
-        // Loguear el resultado creado
-        logger.info("Resultado de cotización creado: {}", resultadoDTO);
-        return new ResponseEntity<>(resultadoDTO, HttpStatus.CREATED);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResultadoCotizacionDTO> obtenerResultadoCotizacion(@PathVariable BigDecimal id) {
@@ -176,6 +162,82 @@ public class ResultadoCotizacionControlador {
         int total = resultadoCotizacionService.contarRegistrosPorRutina(rutinaClave);
         logger.info("Total de registros encontrados: {}", total);
         return ResponseEntity.ok(total);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @PostMapping("/catalogo")
+    public ResponseEntity<?> crearResultadoCotizacionCatalogo(@RequestBody ResultadoCotizacionDTO dto) {
+        logger.info("Recibiendo solicitud para crear resultado de cotización en catálogo");
+
+        if (dto == null) {
+            logger.error("DTO recibido es nulo");
+            return ResponseEntity.badRequest().body(
+                    Collections.singletonMap("error", "La cotización no puede ser nula"));
+        }
+
+        try {
+            ResultadoCotizacionDTO resultado = resultadoCotizacionService.crearResultadoCotizacionCatalogo(dto);
+
+            if (resultado == null) {
+                logger.info("No se creó cotización - ya existe una idéntica");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                        Collections.singletonMap("mensaje",
+                                "Ya existe una cotización idéntica para este seguro, cobertura y clave"));
+            }
+
+            logger.info("Cotización creada exitosamente: {}", resultado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
+
+        } catch (IllegalArgumentException e) {
+            logger.warn("Error de validación: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(
+                    Collections.singletonMap("error", e.getMessage()));
+        } catch (Exception e) {
+            logger.error("Error interno al procesar cotización", e);
+            return new ResponseEntity<>("Error interno al procesar la cotización", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/catalogo/{cotizacionClave}")
+    public ResponseEntity<?> obtenerResultadosCatalogoPorCotizacionClave(
+            @PathVariable BigDecimal cotizacionClave) {
+        logger.info("Obteniendo resultados de catálogo para cotización clave: {}", cotizacionClave);
+
+        try {
+            List<ResultadoCotizacionDTO> resultados = resultadoCotizacionService
+                    .obtenerResultadosCatalogoPorCotizacionClave(cotizacionClave);
+
+            if (resultados.isEmpty()) {
+                logger.info("No se encontraron resultados de catálogo para la cotización clave: {}", cotizacionClave);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        Collections.singletonMap("mensaje",
+                                "No se encontraron resultados de catálogo para la cotización especificada"));
+            }
+
+            logger.info("Encontrados {} resultados de catálogo para cotización clave: {}",
+                    resultados.size(), cotizacionClave);
+            return ResponseEntity.ok(resultados);
+
+        } catch (Exception e) {
+            logger.error("Error al obtener resultados de catálogo para cotización clave: " + cotizacionClave, e);
+            return new ResponseEntity<>("Error interno al procesar la solicitud",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
