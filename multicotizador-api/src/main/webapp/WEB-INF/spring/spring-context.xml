@@ -15,9 +15,19 @@
            http://www.springframework.org/schema/task/spring-task-4.3.xsd"
        default-autowire="byName">
 
+    <!-- Rate Limiting Configuration -->
+    <bean id="rateLimiter" class="com.qualitas.portal.accountfraudesapi.configuracion.ratelimit.RateLimiter"/>
+    <bean id="rateLimitInterceptor" class="com.qualitas.portal.accountfraudesapi.configuracion.ratelimit.RateLimitInterceptor"/>
+    
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/api/auth/**"/>
+            <ref bean="rateLimitInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
     <!-- Configuración del scheduler para ejecuciones automáticas -->
-
-
     <task:annotation-driven scheduler="scheduledExecutor" />
     <task:scheduler id="scheduledExecutor" pool-size="5"/>
 
