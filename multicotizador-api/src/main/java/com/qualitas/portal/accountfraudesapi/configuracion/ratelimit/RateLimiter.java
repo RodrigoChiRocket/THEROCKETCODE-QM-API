@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 public class RateLimiter {
     private static final Logger logger = LoggerFactory.getLogger(RateLimiter.class);
     private final ConcurrentHashMap<String, List<Long>> requestTimestamps = new ConcurrentHashMap<>();
-    private static final int MAX_REQUESTS = 2; // 2 requests per minute
+    private static final int MAX_REQUESTS = 120; // 2 requests per minute
     private static final long WINDOW_SIZE_MS = 60_000; // 1 minute in milliseconds
 
     public synchronized boolean tryConsume(String key) {
