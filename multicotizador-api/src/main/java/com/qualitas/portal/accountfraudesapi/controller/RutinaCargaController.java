@@ -175,7 +175,7 @@ private ResultadoCotizacionService resultadoCotizacionService;
             logger.info("[MANUAL] Obtenidas {} cotizaciones para envío manual", cotizaciones.size());
 
             // Enviar las cotizaciones a Chubb (pero no usamos esta respuesta)
-            ResponseEntity<String> response = enviarCotizaciones("Chubb", "http://localhost:8004/cotizacion/chubb", cotizaciones);
+            ResponseEntity<String> response = enviarCotizaciones("Chubb", "http://localhost:8000/multicotizador-api/rutina-carga/enviar/chubb", cotizaciones);
 
             // Verificar y procesar completadas
             rutinaCargaService.verificarYProcesarCotizacionesCompletadas(rutinaId);
