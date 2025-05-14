@@ -28,6 +28,7 @@
         <result property="iDanoVehiculo" column="I_DANO_VEHICULO"/>
         <result property="dFechaCreacion" column="D_FECHA_CREACION"/>
         <result column="V_ESTADO" property="vEstado"/>
+        <result column="B_REGISTRO_ACTIVO" property="bRegistroActivo"/>
     </resultMap>
 
 
@@ -101,8 +102,10 @@
         SELECT *
         FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_COTIZACION_CLAVE = #{cotizacionClave}
-          AND (V_ESTADO != 'Completado')
+          AND V_ESTADO != 'Completado'
+      AND B_REGISTRO_ACTIVO != 1
     </select>
+
 
     <select id="buscarPorNombreSeguroYCotizacionClave" resultMap="ResultadoCotizacionResultMap">
         SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
@@ -133,6 +136,7 @@
             AND V_NOMBRE_COBERTURA = #{vNombreCobertura}
         </if>
     </select>
+
 
 
     <!-- ERROR-->
@@ -257,13 +261,13 @@
         I_COTIZACION_CLAVE, V_NOMBRE_SEGURO, V_NOMBRE_COBERTURA, D_PRECIO_TOTAL, V_PLAZO_COBERTURA,
         D_PRIMER_PAGO, D_PAGOS_RESTA, I_VIGENCIA, D_DANOS_TERCEROS, I_ROBO_TOTAL, I_ROBO_PARCIAL,
         D_GASTOS_MEDICOS, I_DANOS_LLANTA, I_DANO_CRISTAL, I_REPOSICION_LLAVE, B_PERDIDA_TOTAL,
-        D_FALLECIMENTO, B_DEFENSA_LEGAL, B_ASISTENCIAL_VIAL_CARRETERA, I_DANO_VEHICULO, I_RUTINA_CARGA_CLAVE, B_CATALOGO_DATO
+        D_FALLECIMENTO, B_DEFENSA_LEGAL, B_ASISTENCIAL_VIAL_CARRETERA, I_DANO_VEHICULO, I_RUTINA_CARGA_CLAVE, B_CATALOGO_DATO, V_ESTADO
         ) VALUES (
         #{iCotizacionClave}, #{vNombreSeguro}, #{vNombreCobertura}, #{dPrecioTotal}, #{vPlazoCobertura},
         #{dPrimerPago}, #{dPagosResta}, #{iVigencia}, #{dDanosTerceros}, #{iRoboTotal}, #{iRoboParcial},
         #{dGastosMedicos}, #{iDanosLlanta}, #{iDanoCristal}, #{iReposicionLlave}, #{bPerdidaTotal},
         #{dFallecimiento}, #{bDefensaLegal}, #{bAsistencialVialCarretera}, #{iDanoVehiculo}, #{iRutinaCargaClave},
-        #{bCatalogoDato}
+        #{bCatalogoDato}, #{vEstado}
         )
         <selectKey keyProperty="iResultadoCotizacionId" resultType="BigDecimal" order="AFTER">
             SELECT SEQ_RESULTADO_COTIZACION_ID.CURRVAL FROM dual
@@ -281,6 +285,13 @@
         WHERE I_RUTINA_CARGA_CLAVE = #{rutinaCargaClave}
           AND V_ESTADO IN ('Completado', 'Error')
     </delete>
+
+    <update id="marcarResultadosComoInactivosPorRutinaYEstado" parameterType="java.math.BigDecimal">
+        UPDATE C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        SET B_REGISTRO_ACTIVO = '1'  -- Marcamos como inactivo (0) en lugar de borrar
+        WHERE I_RUTINA_CARGA_CLAVE = #{rutinaCargaClave}
+          AND V_ESTADO IN ('Completado', 'Error')
+    </update>
     <delete id="eliminarResultado
     sCotizacionCompletados" parameterType="java.math.BigDecimal">
         DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
