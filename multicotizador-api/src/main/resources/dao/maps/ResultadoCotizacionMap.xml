@@ -55,6 +55,7 @@
     <select id="obtenerResultadoCotizacion" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
         SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_RESULTADO_COTIZACION_ID = #{id}
+          AND (B_REGISTRO_ACTIVO IS NULL OR B_REGISTRO_ACTIVO = 0 OR B_REGISTRO_ACTIVO = '')
     </select>
 
     <!-- Consulta para actualizar un ResultadoCotizacion -->
@@ -135,7 +136,11 @@
         <if test="vNombreCobertura != null and vNombreCobertura != ''">
             AND V_NOMBRE_COBERTURA = #{vNombreCobertura}
         </if>
+
+        <!-- Filtro para registros activos: null, 0 o vacío -->
+        AND (B_REGISTRO_ACTIVO IS NULL OR B_REGISTRO_ACTIVO = 0 OR B_REGISTRO_ACTIVO = '')
     </select>
+
 
 
 
@@ -249,10 +254,13 @@
 
     <!--Obtener resultado de catalogo -->
     <select id="obtenerResultadosConCatalogo" resultMap="ResultadoCotizacionResultMap">
-        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        SELECT *
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE B_CATALOGO_DATO = 1
+          AND (B_REGISTRO_ACTIVO IS NULL OR B_REGISTRO_ACTIVO = 0 OR B_REGISTRO_ACTIVO = '')
         ORDER BY D_FECHA_CREACION DESC
     </select>
+
 
 
     <!-- Consulta para crear un ResultadoCotizacionCatalogo -->
@@ -304,6 +312,7 @@
     <select id="obtenerResultadosPorCotizacionClaveYCatalogo" parameterType="BigDecimal" resultMap="ResultadoCotizacionResultMap">
         SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_COTIZACION_CLAVE = #{cotizacionClave} AND B_CATALOGO_DATO = 1
+          AND (B_REGISTRO_ACTIVO IS NULL OR B_REGISTRO_ACTIVO = 0 OR B_REGISTRO_ACTIVO = '')
     </select>
 
     <delete id="eliminarResultadosCotizacionPorClave" parameterType="BigDecimal">
@@ -313,10 +322,13 @@
 
 
     <select id="obtenerResultadosPorRutinaYCatalogo" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
-        SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
+        SELECT *
+        FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_RUTINA_CARGA_CLAVE = #{rutinaClave}
           AND B_CATALOGO_DATO = 1
+          AND (B_REGISTRO_ACTIVO IS NULL OR B_REGISTRO_ACTIVO = 0 OR B_REGISTRO_ACTIVO = '')
     </select>
+
 
 
 

@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/tipoauto/**",
                         "/categoriavehiculo",
                         "/resultados-cotizacion/filtrar",
-                        "/resultados-cotizacion"
+                        "/resultados-cotizacion/**"
                 ).permitAll()
 
                 // Proteger solo rutas de dashboard para ADMIN

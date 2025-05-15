@@ -241,6 +241,8 @@ private ResultadoCotizacionService resultadoCotizacionService;
         return response;
     }
 
+
+    /*
     @GetMapping("/enviar/gnp")
     public ResponseEntity<String> enviarDirectognp() {
         BigDecimal rutinaId = new BigDecimal(3);
@@ -252,6 +254,23 @@ private ResultadoCotizacionService resultadoCotizacionService;
         rutinaCargaService.verificarYProcesarCotizacionesCompletadas(rutinaId);
         return response;
     }
+*/
+
+    @GetMapping("/enviar/gnp")
+    public ResponseEntity<String> enviarDirectognp() {
+        BigDecimal rutinaId = new BigDecimal(3);
+        rutinaCargaService.registrarInicioEjecucion(rutinaId);
+
+        // Simular listado de cotizaciones (opcional si lo necesitas para la lógica)
+        List<CotizacionCompletaResponseDTO> cotizaciones = cotizacionService.listarCotizacionesCompletas();
+
+        // Simulación de envío exitoso (NO se hace la llamada real)
+        ResponseEntity<String> response = ResponseEntity.ok("Simulación exitosa: cotizaciones enviadas correctamente");
+
+        rutinaCargaService.verificarYProcesarCotizacionesCompletadas(rutinaId);
+        return response;
+    }
+
 
     @GetMapping("/enviar/hdi")
     public ResponseEntity<String> enviarDirectoHDI() {
