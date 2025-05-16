@@ -258,6 +258,13 @@
         FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE B_CATALOGO_DATO = 1
           AND (B_REGISTRO_ACTIVO IS NULL OR B_REGISTRO_ACTIVO = 0 OR B_REGISTRO_ACTIVO = '')
+          AND (
+            V_ESTADO IS NULL
+                OR V_ESTADO != 'Completado'
+          OR V_ESTADO = 'Error'  -- Incluye explícitamente 'Error'
+          OR V_ESTADO = '0'      -- Incluye explícitamente '0'
+          OR V_ESTADO = ''       -- Incluye vacíos (aunque en Oracle '' es NULL)
+            )
         ORDER BY D_FECHA_CREACION DESC
     </select>
 
@@ -296,23 +303,29 @@
 
     <update id="marcarResultadosComoInactivosPorRutinaYEstado" parameterType="java.math.BigDecimal">
         UPDATE C##MULTICOTIZADOR.RESULTADO_COTIZACION
-        SET B_REGISTRO_ACTIVO = '1'  -- Marcamos como inactivo (0) en lugar de borrar
+        SET B_REGISTRO_ACTIVO = 1  -- Marcamos como inactivo (0) en lugar de borrar
         WHERE I_RUTINA_CARGA_CLAVE = #{rutinaCargaClave}
           AND V_ESTADO IN ('Completado', 'Error')
     </update>
-    <delete id="eliminarResultado
-    sCotizacionCompletados" parameterType="java.math.BigDecimal">
+    <delete id="eliminarResultadosCotizacionCompletados" parameterType="java.math.BigDecimal">
         DELETE FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_RUTINA_CARGA_CLAVE = #{rutinaCargaClave}
           AND V_ESTADO = 'Completado'
     </delete>
 
 
-
+<!--Este es el correcto para vista de resultado cotizacion-->
     <select id="obtenerResultadosPorCotizacionClaveYCatalogo" parameterType="BigDecimal" resultMap="ResultadoCotizacionResultMap">
         SELECT * FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_COTIZACION_CLAVE = #{cotizacionClave} AND B_CATALOGO_DATO = 1
           AND (B_REGISTRO_ACTIVO IS NULL OR B_REGISTRO_ACTIVO = 0 OR B_REGISTRO_ACTIVO = '')
+          AND (
+            V_ESTADO IS NULL
+                OR V_ESTADO != 'Completado'
+          OR V_ESTADO = 'Error'  -- Incluye explícitamente 'Error'
+          OR V_ESTADO = '0'      -- Incluye explícitamente '0'
+          OR V_ESTADO = ''       -- Incluye vacíos (aunque en Oracle '' es NULL)
+            )
     </select>
 
     <delete id="eliminarResultadosCotizacionPorClave" parameterType="BigDecimal">
@@ -321,18 +334,26 @@
     </delete>
 
 
+    <!-- Este obtiene la cantidad de registros en rutina-->
     <select id="obtenerResultadosPorRutinaYCatalogo" parameterType="java.math.BigDecimal" resultMap="ResultadoCotizacionResultMap">
         SELECT *
         FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE I_RUTINA_CARGA_CLAVE = #{rutinaClave}
           AND B_CATALOGO_DATO = 1
           AND (B_REGISTRO_ACTIVO IS NULL OR B_REGISTRO_ACTIVO = 0 OR B_REGISTRO_ACTIVO = '')
+          AND (
+            V_ESTADO IS NULL
+                OR V_ESTADO != 'Completado'
+          OR V_ESTADO = 'Error'  -- Incluye explícitamente 'Error'
+          OR V_ESTADO = '0'      -- Incluye explícitamente '0'
+          OR V_ESTADO = ''       -- Incluye vacíos (aunque en Oracle '' es NULL)
+            )
     </select>
 
 
 
 
-    <!-- Dashboard-->
+    <!-- Dashboard no olvides contar los que ya cambiaron si estan activos-->
 
 
 
@@ -342,19 +363,29 @@
         SELECT
             TO_CHAR(D_FECHA_CREACION, 'YYYY-MM') AS mes,
             V_NOMBRE_SEGURO AS aseguradora,
-            COUNT(*) AS cantidad
+            SUM(CASE
+                    WHEN (V_ESTADO IS NULL OR
+                          V_ESTADO = '' OR
+                          V_ESTADO = '0' OR
+                          (V_ESTADO NOT IN ('Error', 'Completado')))
+                        THEN 1
+                    ELSE 0
+                END) AS cantidad
         FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE B_CATALOGO_DATO = 1
-          AND V_ESTADO != 'Error'
-      AND V_NOMBRE_SEGURO IN ('Chubb', 'AXA', 'GNP', 'HDI', 'Mapfre')
+          AND V_NOMBRE_SEGURO IN ('Chubb', 'AXA', 'GNP', 'HDI', 'Mapfre')
         GROUP BY TO_CHAR(D_FECHA_CREACION, 'YYYY-MM'), V_NOMBRE_SEGURO
         ORDER BY mes, aseguradora
     </select>
 
-    <!-- Consulta para obtener estadísticas de coberturas del mes actual -->
     <select id="obtenerEstadisticasCoberturasMesActual" resultType="com.qualitas.portal.fraudes.account.application.dto.response.EstadisticasCoberturaDTO">
         SELECT
-            SUM(CASE WHEN V_ESTADO != 'Error' THEN 1 ELSE 0 END) AS cantidadValida,
+            SUM(CASE
+                    WHEN (V_ESTADO IS NULL OR V_ESTADO = '' OR V_ESTADO = '0' OR
+                          (V_ESTADO NOT IN ('Error', 'Completado') AND V_ESTADO IS NOT NULL AND V_ESTADO != ''))
+                        THEN 1
+                    ELSE 0
+                END) AS cantidadValida,
             SUM(CASE WHEN V_ESTADO = 'Error' THEN 1 ELSE 0 END) AS cantidadError
         FROM C##MULTICOTIZADOR.RESULTADO_COTIZACION
         WHERE B_CATALOGO_DATO = 1
